@@ -201,23 +201,12 @@
         }
 
         function downloadBox(id) {
-    const el = document.getElementById(id);
-    const table = el.querySelector('.table-modern'); // Foca na tabela filtrada
-    el.classList.add('capturing');
-    
-    html2canvas(el, {
-        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg'),
-        scale: 2,
-        logging: false,
-        useCORS: true
-    }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `escala-${id}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        el.classList.remove('capturing');
-    });
-}
+            const el = document.getElementById(id);
+            el.classList.add('capturing');
+            html2canvas(el, {
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg'),
+                scale: 2
+            }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `escala-${id}.png`;
                 link.href = canvas.toDataURL();
@@ -402,6 +391,7 @@
     </script>
 </body>
 </html>
+
 
 
 
