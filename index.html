@@ -179,17 +179,27 @@
         ];
 
         async function save() {
-            document.getElementById('sync-label').innerText = "GRAVANDO...";
-            document.getElementById('dot').style.background = "#ff9800";
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${API.b}`, {
-                    method: 'PUT', headers: { "Content-Type": "application/json", "X-Master-Key": API.k },
-                    body: JSON.stringify(db)
-                });
-                document.getElementById('sync-label').innerText = "SALVO!";
-                document.getElementById('dot').style.background = "#00ff88";
-            } catch (e) { document.getElementById('sync-label').innerText = "ERRO!"; }
-        }
+    document.getElementById('sync-label').innerText = "GRAVANDO...";
+    document.getElementById('dot').style.background = "#ff9800";
+    try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${API.b}`, {
+            method: 'PUT',
+            headers: { 
+                "Content-Type": "application/json", 
+                "X-Master-Key": API.k // Esta linha é vital para bancos privados
+            },
+            body: JSON.stringify(db)
+        });
+
+        if (!response.ok) throw new Error();
+
+        document.getElementById('sync-label').innerText = "SALVO!";
+        document.getElementById('dot').style.background = "#00ff88";
+    } catch (e) { 
+        document.getElementById('sync-label').innerText = "ERRO!"; 
+        document.getElementById('dot').style.background = "#ff1744";
+    }
+}
 
         async function load() {
             try {
@@ -346,3 +356,4 @@
     </script>
 </body>
 </html>
+
