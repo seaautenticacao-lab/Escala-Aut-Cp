@@ -178,7 +178,7 @@
             { c: 'st-D', t: 'D (Domingo)' }
         ];
 
-        async function save() {
+async function save() {
     document.getElementById('sync-label').innerText = "GRAVANDO...";
     document.getElementById('dot').style.background = "#ff9800";
     try {
@@ -186,10 +186,21 @@
             method: 'PUT',
             headers: { 
                 "Content-Type": "application/json", 
-                "X-Master-Key": API.k // Esta linha é vital para bancos privados
+                "X-Master-Key": API.k 
             },
             body: JSON.stringify(db)
         });
+
+        if (!response.ok) throw new Error('Erro na gravação');
+
+        document.getElementById('sync-label').innerText = "SALVO!";
+        document.getElementById('dot').style.background = "#00ff88";
+    } catch (e) { 
+        document.getElementById('sync-label').innerText = "ERRO!"; 
+        document.getElementById('dot').style.background = "#ff1744";
+        console.error("Detalhes do erro:", e);
+    }
+}
 
         if (!response.ok) throw new Error();
 
@@ -356,4 +367,5 @@
     </script>
 </body>
 </html>
+
 
