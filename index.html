@@ -1,399 +1,59 @@
-<!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Management | v24.0 Image Export</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
-        
-        :root[data-theme="dark"] {
-            --accent: #6366f1; --bg: #0f172a; --card: #1e293b; --text: #ffffff; --border: #334155;
-            --sub-text: #cbd5e1; --name-bg: #0f172a; --slot-bg: #1e293b;
-        }
-        :root[data-theme="light"] {
-            --accent: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #000000; --border: #94a3b8;
-            --sub-text: #1e293b; --name-bg: #f1f5f9; --slot-bg: #cbd5e1;
-        }
 
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-weight: 900; transition: 0.3s; user-select: none; }
-        
-        .sync-indicator { position: fixed; top: 20px; left: 20px; font-size: 0.75rem; font-weight: 900; display: flex; align-items: center; gap: 8px; background: var(--card); padding: 10px 18px; border-radius: 50px; z-index: 1000; border: 2px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .pulse-dot { width: 10px; height: 10px; background: #00ff88; border-radius: 50%; }
+import React from 'react';
+import { TabType } from '../types';
+import { ShieldCheck } from 'lucide-react';
 
-        .sidebar-nav { background: var(--card); border-radius: 20px; padding: 8px; display: flex; gap: 8px; margin: 20px auto; width: fit-content; border: 2px solid var(--border); }
-        .nav-btn { border: none; background: transparent; color: var(--text); padding: 12px 24px; border-radius: 15px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
-        .nav-btn.active { background: var(--accent); color: #fff !important; }
-        
-        .paint-palette { background: var(--card); padding: 25px; border-radius: 25px; margin: 0 auto 25px; max-width: 1250px; border: 2px solid var(--border); }
-        .mes-badge { background: #4f46e5; color: #fff; padding: 10px 25px; border-radius: 50px; font-weight: 900; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.3); }
-        .mes-select-transparent { background: transparent; border: none; color: white; font-weight: 900; cursor: pointer; outline: none; }
-        
-        .btn-box { background: var(--accent); color: white; border: none; padding: 8px 20px; border-radius: 12px; font-weight: 900; margin: 0 5px; cursor: pointer; }
+interface NavbarProps {
+  activeTab: TabType;
+  setTab: (tab: TabType) => void;
+  isAuth: boolean;
+  logout: () => void;
+}
 
-        .tools-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding-top: 15px; border-top: 2px solid var(--border); }
-        .paint-tool { min-width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; font-weight: 900; color: white !important; }
-        .paint-tool.active { outline: 3px solid var(--text); transform: scale(1.1); }
+const Navbar: React.FC<NavbarProps> = ({ activeTab, setTab }) => {
+  const tabs = [
+    { id: TabType.CP, label: 'CENTRAL' },
+    { id: TabType.SATURDAYS, label: 'SÁBADOS' },
+    { id: TabType.SUNDAYS, label: 'DOMINGOS' },
+  ];
 
-        /* ESTILOS DE CORES */
-        .st-9H, .st-14H { background: #0044ff !important; color: white !important; }
-        .st-8H, .st-11H, .st-13H { background: #00c853 !important; color: white !important; }
-        .st-0-5 { background: #ffffff !important; color: #000000 !important; border: 1px solid #334155; }
-        .st-F { background: #ff0000 !important; color: white !important; }
-        .st-BH-1, .st-BH-05 { background: #aa00ff !important; color: white !important; }
-        .st-FF { background: #455a64 !important; color: white !important; }
-        .st-FD { background: #ff6d00 !important; color: white !important; }
-        .st-FE { background: #ffd600 !important; color: black !important; }
-        .st-FER { background: #1b5e20 !important; color: white !important; }
-        
-        .glass-card { background: var(--card); border-radius: 25px; border: 2px solid var(--border); padding: 25px; width: fit-content; margin: 0 auto 30px auto; position: relative; }
-        .table-title { font-weight: 900; font-size: 1.2rem; color: #4f46e5; margin-bottom: 20px; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; gap: 15px; }
-        
-        .btn-capture { background: var(--border); color: var(--text); border: none; width: 32px; height: 32px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-capture:hover { background: var(--accent); color: white; transform: scale(1.1); }
-
-        .table-modern th { text-align: center; font-size: 0.75rem; color: var(--text); padding: 8px 4px; border-bottom: 2px solid var(--border); }
-        .td-name { background: var(--name-bg); color: var(--text); border-radius: 10px; padding: 12px 18px; min-width: 170px; border: 2px solid var(--border); position: relative; }
-        .btn-del-row { position: absolute; left: -10px; top: 10px; color: #ff1744; cursor: pointer; font-size: 0.9rem; }
-        
-        .slot { width: 36px; height: 36px; border-radius: 8px; background: var(--slot-bg); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
-        
-        /* CSS DA LEGENDA */
-        .legend-footer { margin-top: 15px; padding-top: 12px; border-top: 2px solid var(--border); display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.65rem; opacity: 0.9; background: var(--bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
-        .legend-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); }
-
-        .fab-add { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #4f46e5; color: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; cursor: pointer; z-index: 100; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-    
-        .capturing .btn-del-row, .capturing .btn-capture { display: none !important; }
-    </style>
-</head>
-<body onmouseup="stopPainting()" onmouseleave="stopPainting()">
-
-    <div class="sync-indicator">
-        <div class="pulse-dot" id="dot"></div>
-        <span id="sync-label">Aguardando...</span>
-    </div>
-
-    <div id="main-wrapper">
-        <div class="sidebar-nav">
-            <button class="nav-btn active" onclick="setTab('autenticacao', this)">Autenticação</button>
-            <button class="nav-btn" onclick="setTab('cp', this)">CP</button>
-            <button class="nav-btn" onclick="setTab('sabado', this)">Sábados</button>
-            <button class="nav-btn" onclick="setTab('domingo', this)">Domingos</button>
+  return (
+    <nav className="fixed top-2 left-1/2 -translate-x-1/2 w-[98%] max-w-6xl z-50">
+      <div className="glass rounded-2xl px-5 py-3 flex items-center justify-between border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-indigo-600 rounded-xl shadow-lg">
+            <ShieldCheck className="text-white w-5 h-5" />
+          </div>
+          <div className="hidden sm:block">
+            <h1 className="text-sm font-black tracking-tight uppercase leading-none text-white">
+              PRO <span className="text-indigo-600">ESCALA</span>
+            </h1>
+            <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest">PREMIUM V4.0</span>
+          </div>
         </div>
 
-        <div class="paint-palette">
-            <div class="d-flex flex-column align-items-center mb-4">
-                <div class="mes-badge">
-                    <select id="sel-mes" class="mes-select-transparent" onchange="render();"></select>
-                    <select id="sel-ano" class="mes-select-transparent" onchange="render();"></select>
-                    
-                    <span class="ms-3 me-1" style="font-size: 0.7rem; opacity: 0.8;">DE:</span>
-                    <input type="date" id="filtro-inicio" class="mes-select-transparent" onchange="render();" style="width: 130px;">
-                    <span class="ms-2 me-1" style="font-size: 0.7rem; opacity: 0.8;">ATÉ:</span>
-                    <input type="date" id="filtro-fim" class="mes-select-transparent" onchange="render();" style="width: 130px;">
-                    <button class="btn-capture ms-2" onclick="limparFiltro()" title="Limpar Filtro"><i class="fas fa-times"></i></button>
-                </div>
-                <div>
-                    <button class="btn-box" onclick="changeBox(1)"><i class="fas fa-plus"></i> Adicionar Caixa</button>
-                    <button class="btn-box bg-danger" onclick="changeBox(-1)"><i class="fas fa-minus"></i> Remover Caixa</button>
-                    <button class="btn-box bg-secondary" onclick="toggleTheme()">Tema</button>
-                    <button class="btn-box bg-success" onclick="save()"><i class="fas fa-cloud-upload-alt"></i> SALVAR TUDO</button>
-                </div>
-            </div>
-
-            <div class="tools-wrapper">
-                <div class="paint-tool st-9H" onclick="selectTool('9H', this)">9H</div>
-                <div class="paint-tool st-8H" onclick="selectTool('8H', this)">8H</div>
-                <div class="paint-tool st-11H" onclick="selectTool('11H', this)">11H</div>
-                <div class="paint-tool st-13H" onclick="selectTool('13H', this)">13H</div>
-                <div class="paint-tool st-14H" onclick="selectTool('14H', this)">14H</div>
-                <div class="paint-tool st-0-5" onclick="selectTool('0.5', this)">0,5</div>
-                <div class="paint-tool st-F" onclick="selectTool('F', this)">F</div>
-                <div class="paint-tool st-FER" onclick="selectTool('FER', this)">FER</div>
-                <div class="paint-tool st-BH-1" onclick="selectTool('BH-1', this)">BH-1</div>
-                <div class="paint-tool st-BH-05" onclick="selectTool('BH-0.5', this)">BH-0.5</div>
-                <div class="paint-tool st-FF" onclick="selectTool('FF', this)">FF</div>
-                <div class="paint-tool st-FD" onclick="selectTool('FD', this)">FD</div>
-                <div class="paint-tool st-FE" onclick="selectTool('FE', this)">FE</div>
-                <div class="paint-tool bg-dark ms-2" onclick="selectTool('', this)"><i class="fas fa-eraser"></i></div>
-                <button class="btn btn-primary ms-3 rounded-pill fw-900" onclick="modalNomes.show()">EQUIPE</button>
-            </div>
+        <div className="flex bg-slate-950 p-1 rounded-xl gap-1 border border-slate-800">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setTab(tab.id)}
+              className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
+                activeTab === tab.id
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : 'text-slate-500 hover:text-white'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
-        <div id="render-zone"></div>
-    </div>
 
-    <div class="modal fade" id="modalNomes" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content glass-card"><div class="modal-body">
-        <h5 class="fw-900">Gerenciar Equipe</h5>
-        <div class="input-group my-3"><input id="inNome" class="form-control" placeholder="Nome..."><button class="btn btn-primary" onclick="addN()">OK</button></div>
-        <div id="listN" class="list-group"></div>
-    </div></div></div></div>
-
-    <div class="modal fade" id="modalAdd" tabindex="-1"><div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content glass-card"><div class="modal-body">
-        <h6 class="fw-900 text-center">Escalar Técnico</h6>
-        <select id="selT" class="form-select mb-3"></select>
-        <div id="extra-fields" style="display:none">
-            <select id="selS" class="form-select mb-2"><option value="1">1ª Semana</option><option value="2">2ª Semana</option><option value="3">3ª Semana</option><option value="4">4ª Semana</option><option value="5">5ª Semana</option></select>
-            <select id="selSet" class="form-select mb-3"><option value="AUT">AUTENTICAÇÃO</option><option value="CP">CP</option></select>
+        <div className="w-10 h-10 flex items-center justify-center bg-slate-900 rounded-xl border border-slate-800 shadow-sm opacity-50">
+           <ShieldCheck size={18} className="text-indigo-600" />
         </div>
-        <button class="btn btn-primary w-100 fw-900" onclick="confirmAdd()">ADICIONAR</button>
-    </div></div></div></div>
+      </div>
+    </nav>
+  );
+};
 
-    <button class="fab-add" onclick="openAddModal()"><i class="fas fa-plus"></i></button>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const API = { k: '$2a$10$Q2kXyLLkTCC5B3yZji9a3.DpwGfIxqoCxivdXlEX95CSREglkI/xG', b: '696fe1e1ae596e708fe97dbb' };
-        let db = { autenticacao: [], cp: [], sabado: [], domingo: [], nomesLista: [], config: { boxCount: 1 } };
-        let curTab = 'autenticacao', selectedTool = null, isPainting = false;
-
-        const modalNomes = new bootstrap.Modal(document.getElementById('modalNomes'));
-        const modalAdd = new bootstrap.Modal(document.getElementById('modalAdd'));
-
-        const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-        const mesSel = document.getElementById('sel-mes');
-        const anoSel = document.getElementById('sel-ano');
-        meses.forEach((m, i) => mesSel.innerHTML += `<option value="${i}" ${i === new Date().getMonth() ? 'selected' : ''}>${m}</option>`);
-        for(let a=2024; a<=2026; a++) anoSel.innerHTML += `<option value="${a}" ${a === new Date().getFullYear() ? 'selected' : ''}>${a}</option>`;
-
-        // DEFINIÇÃO DA LEGENDA
-        const legendData = [
-            { c: 'st-9H', t: '9H (9 Horas)' },
-            { c: 'st-8H', t: '8H (8 Horas)' },
-            { c: 'st-11H', t: '11H (11 Horas)' },
-            { c: 'st-13H', t: '13H (13 Horas)' },
-            { c: 'st-14H', t: '14H (14 Horas)' },
-            { c: 'st-0-5', t: '0,5 (Trabalhar meio período)' },
-            { c: 'st-F', t: 'F (Fechamento)' },
-            { c: 'st-FER', t: 'FER (Férias)' },
-            { c: 'st-BH-1', t: 'BH-1 (BH dia completo)' },
-            { c: 'st-BH-05', t: 'BH-0,5 (BH Meio período)' },
-            { c: 'st-FF', t: 'FF (Folga do feriado)' },
-            { c: 'st-FD', t: 'FD (Folga do domingo)' },
-            { c: 'st-FE', t: 'FE (Feriado)' }
-        ];
-
-        async function save() {
-            document.getElementById('sync-label').innerText = "GRAVANDO...";
-            document.getElementById('dot').style.background = "#ff9800";
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${API.b}`, {
-                    method: 'PUT', headers: { "Content-Type": "application/json", "X-Master-Key": API.k },
-                    body: JSON.stringify(db)
-                });
-                document.getElementById('sync-label').innerText = "SALVO!";
-                document.getElementById('dot').style.background = "#00ff88";
-            } catch (e) { document.getElementById('sync-label').innerText = "ERRO!"; }
-        }
-
-        async function load() {
-            try {
-                const r = await fetch(`https://api.jsonbin.io/v3/b/${API.b}/latest`, { headers: { "X-Master-Key": API.k, "X-Bin-Meta": "false" }});
-                db = await r.json();
-                render();
-                document.getElementById('sync-label').innerText = "DADOS CARREGADOS";
-                document.getElementById('dot').style.background = "#00ff88";
-            } catch (e) { }
-        }
-
-        function downloadBox(id) {
-            const el = document.getElementById(id);
-            el.classList.add('capturing');
-            html2canvas(el, {
-                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg'),
-                scale: 2
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `escala-${id}.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-                el.classList.remove('capturing');
-            });
-        }
-
-        function changeBox(v) {
-            if(!db.config) db.config = { boxCount: 1 };
-            db.config.boxCount = Math.max(1, db.config.boxCount + v);
-            render();
-        }
-
-        function getWD(d, m, a) {
-            const date = new Date(a, m, d);
-            return ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB'][date.getDay()];
-        }
-
-        function limparFiltro() {
-            document.getElementById('filtro-inicio').value = '';
-            document.getElementById('filtro-fim').value = '';
-            render();
-        }
-
-        function render() {
-            const area = document.getElementById('render-zone');
-            const mesBase = parseInt(mesSel.value);
-            const anoBase = parseInt(anoSel.value);
-            const fInicio = document.getElementById('filtro-inicio').value;
-            const fFim = document.getElementById('filtro-fim').value;
-            let h = "";
-
-            // GERA O HTML DA LEGENDA
-            let legendHTML = '<div class="legend-footer">';
-            legendData.forEach(l => {
-                legendHTML += `<div class="legend-item"><div class="legend-dot ${l.c}"></div><span>${l.t}</span></div>`;
-            });
-            legendHTML += '</div>';
-
-            if(curTab === 'autenticacao' || curTab === 'cp') {
-                const count = db.config ? db.config.boxCount : 1;
-                const items = db[curTab] || [];
-                const perBox = Math.ceil(items.length / count) || 1;
-
-                for(let b=0; b < count; b++) {
-                    let curM = (mesBase + b) % 12;
-                    let curA = anoBase + Math.floor((mesBase + b) / 12);
-                    let dim = new Date(curA, curM + 1, 0).getDate();
-                    let titulo = meses[curM].toUpperCase();
-                    let boxID = `box-${curTab}-${b}`;
-
-                    const slice = items.slice(b * perBox, (b * perBox) + perBox);
-                    
-                    let diasVisiveis = [];
-                    for(let d=1; d<=dim; d++) {
-                        let dataObj = new Date(curA, curM, d);
-                        let check = true;
-                        if(fInicio) {
-                            let dIni = new Date(fInicio + "T00:00:00");
-                            if(dataObj < dIni) check = false;
-                        }
-                        if(fFim) {
-                            let dFim = new Date(fFim + "T00:00:00");
-                            if(dataObj > dFim) check = false;
-                        }
-                        if(check) diasVisiveis.push(d);
-                    }
-
-                    if (diasVisiveis.length === 0 && (fInicio || fFim)) continue;
-
-                    let head = `<th class="td-name">TÉCNICO</th>`;
-                    diasVisiveis.forEach(d => {
-                        head += `<th>${d}<br>${getWD(d, curM, curA)}</th>`;
-                    });
-                    
-                    let rows = slice.map((item, i) => {
-                        const realIdx = (b * perBox) + i;
-                        let r = `<td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE('${curTab}', ${realIdx})"></i>${item.nome}</td>`;
-                        diasVisiveis.forEach(d => {
-                            const rawVal = (item.dias && item.dias[d]) || '';
-                            
-                            let classVal = rawVal.toString().replace('.', '-');
-                            let displayVal = (rawVal === 'vazio') ? '' : rawVal;
-
-                            if (rawVal.toString().startsWith('FF:')) {
-                                classVal = 'FF';
-                                displayVal = rawVal.split(':')[1];
-                            }
-
-                            r += `<td><div class="slot st-${classVal||'vazio'}" onmousedown="startP(event, ${realIdx},${d})" onmouseenter="moveP(event, ${realIdx},${d})">${displayVal}</div></td>`;
-                        });
-                        return `<tr>${r}</tr>`;
-                    }).join('');
-                    // INCLUI A LEGENDA NO FINAL DO CARD
-                    h += `<div class="glass-card" id="${boxID}"><div class="table-title">${titulo} <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button></div><table class="table-modern"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>${legendHTML}</div>`;
-                }
-            } else {
-                for(let s=1; s<=5; s++) {
-                    let boxID = `box-${curTab}-${s}`;
-                    h += `<div class="glass-card" id="${boxID}" style="width:550px"><div class="table-title">${meses[mesBase].toUpperCase()} - ${s}ª SEMANA <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button></div><table class="table-modern w-100"><thead><tr><th class="td-name">NOME</th><th>DATA</th><th>ST</th></tr></thead><tbody><tr><td colspan="3"><span class="setor-badge" style="color:#00ff88">AUTENTICAÇÃO</span></td></tr>${getRowsWeek(curTab, 'AUT', s)}<tr><td colspan="3"><span class="setor-badge" style="color:#6366f1">CP</span></td></tr>${getRowsWeek(curTab, 'CP', s)}</tbody></table></div>`;
-                }
-            }
-            area.innerHTML = h;
-            document.getElementById('listN').innerHTML = (db.nomesLista || []).map((n, i) => `<div class="list-group-item bg-transparent text-white border-0 d-flex justify-content-between"><strong>${n}</strong> <i class="fas fa-trash text-danger" onclick="delN(${i})"></i></div>`).join('');
-            document.getElementById('selT').innerHTML = (db.nomesLista || []).map(n => `<option>${n}</option>`).join('');
-        }
-
-        function getRowsWeek(t, s, w) {
-            return (db[t] || []).filter(x => x.setor === s && x.semana == w).map(item => {
-                const idx = db[t].indexOf(item);
-                const rawVal = (item.dias && item.dias[1]) || '';
-                const classVal = rawVal.toString().replace('.', '-');
-                const displayVal = (rawVal === 'vazio') ? '' : rawVal;
-                return `<tr><td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE('${t}', ${idx})"></i>${item.nome}</td><td><input type="date" class="bg-transparent border-0 text-white fw-900" style="font-size:0.8rem" value="${item.dataManual||''}" onchange="db['${t}'][${idx}].dataManual=this.value;"></td><td><div class="slot st-${classVal||'vazio'}" onmousedown="startP(event, ${idx},1)">${displayVal}</div></td></tr>`;
-            }).join('');
-        }
-
-        function startP(e, idx, d) {
-            if (e.button !== 0) return; 
-            isPainting = true;
-            paint(idx, d);
-        }
-
-        function moveP(e, idx, d) {
-            if (selectedTool === 'FF') return; 
-
-            if (isPainting && e.buttons === 1) { 
-                paint(idx, d);
-            }
-        }
-
-        function paint(idx, d) {
-            if(selectedTool !== null) {
-                if(!db[curTab][idx].dias) db[curTab][idx].dias = {};
-                
-                let valorFinal = selectedTool;
-
-                if (selectedTool === 'FF') {
-                    let valorAtual = db[curTab][idx].dias[d] || '';
-                    let textoPadrao = '';
-                    
-                    if (valorAtual.toString().startsWith('FF:')) {
-                        textoPadrao = valorAtual.split(':')[1];
-                    }
-
-                    isPainting = false; 
-                    let novoTexto = prompt("Digite o dia ou nota para o Feriado:", textoPadrao);
-
-                    if (novoTexto === null) return; 
-                    
-                    if (novoTexto.trim() === "") {
-                        valorFinal = "FF";
-                    } else {
-                        valorFinal = "FF:" + novoTexto;
-                    }
-                }
-
-                if (db[curTab][idx].dias[d] !== valorFinal) {
-                    db[curTab][idx].dias[d] = valorFinal;
-                    render();
-                }
-            }
-        }
-
-        function stopPainting() { isPainting = false; }
-        function selectTool(v, el) { selectedTool = v; document.querySelectorAll('.paint-tool').forEach(t => t.classList.remove('active')); if(el) el.classList.add('active'); }
-        function setTab(t, b) { curTab = t; document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); document.getElementById('extra-fields').style.display = (t==='sabado'||t==='domingo')?'block':'none'; render(); }
-        function openAddModal() { modalAdd.show(); }
-        function confirmAdd() { 
-            const n = document.getElementById('selT').value; if(!n) return;
-            if(!db[curTab]) db[curTab] = []; 
-            db[curTab].push({nome:n, setor:document.getElementById('selSet').value, semana:document.getElementById('selS').value, dias:{}, dataManual:""}); 
-            render(); modalAdd.hide(); 
-        }
-        function addN() { const i = document.getElementById('inNome'); if(i.value) { if(!db.nomesLista) db.nomesLista=[]; db.nomesLista.push(i.value); render(); i.value=''; } }
-        function delN(i) { db.nomesLista.splice(i,1); render(); }
-        function delE(t, i) { if(confirm("Remover?")){ db[t].splice(i,1); render(); } }
-        function toggleTheme() { const r = document.documentElement; r.setAttribute('data-theme', r.getAttribute('data-theme')==='dark'?'light':'dark'); }
-
-        window.onload = load;
-    </script>
-</body>
-</html>
-
-
-
-
-
-
+export default Navbar;
