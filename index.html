@@ -10,16 +10,26 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
         
-        /* AJUSTE DE TEMA CLARO ULTRA NÍTIDO */
         :root[data-theme="light"] {
             --accent: #4338ca;
             --bg: #f1f5f9;
             --card: #ffffff;
-            --text: #000000; /* Preto puro para leitura */
-            --border: #64748b; /* Cinza escuro para bordas visíveis */
+            --text: #000000;
+            --border: #64748b;
             --sub-text: #334155;
-            --name-bg: #e2e8f0; /* Fundo para a coluna de nomes */
+            --name-bg: #e2e8f0;
             --slot-bg: #cbd5e1;
+        }
+
+        :root[data-theme="dark"] {
+            --accent: #6366f1;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #ffffff;
+            --border: #475569;
+            --sub-text: #94a3b8;
+            --name-bg: #334155;
+            --slot-bg: #0f172a;
         }
 
         body { 
@@ -42,7 +52,6 @@
         .paint-palette { background: var(--card); padding: 25px; border-radius: 25px; margin: 0 auto 25px; max-width: 1250px; border: 3px solid var(--border); }
         .mes-badge { background: var(--accent); color: #fff; padding: 10px 25px; border-radius: 50px; font-weight: 900; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border: 2px solid #000; }
         
-        /* SELECTS E FILTROS MAIS NÍTIDOS */
         .mes-select-transparent { background: rgba(0,0,0,0.1); border: 1px solid #fff; color: white; font-weight: 900; cursor: pointer; outline: none; border-radius: 8px; padding: 2px 5px; }
         .mes-select-transparent option { color: #000; }
         
@@ -52,40 +61,39 @@
         .paint-tool { min-width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; font-weight: 900; color: white !important; border: 2px solid rgba(0,0,0,0.2); }
         .paint-tool.active { outline: 4px solid #000; transform: scale(1.1); box-shadow: 0 0 10px rgba(0,0,0,0.3); }
 
-        /* CORES VÍVIDAS COM BORDA PARA TEMA CLARO */
         .st-9H, .st-14H { background: #0044ff !important; color: white !important; }
         .st-8H, .st-13H { background: #00c853 !important; color: #000 !important; } 
         .st-11H { background: #00e5ff !important; color: #000 !important; }        
         .st-0-5 { background: #ffffff !important; color: #000 !important; border: 2px solid #000 !important; }
-        .st-F { background: #ff1744 !important; color: white !important; }           
+        .st-F { background: #ff1744 !important; color: white !important; }            
         .st-BH-1, .st-BH-05 { background: #d500f9 !important; color: white !important; } 
         .st-FF { background: #455a64 !important; color: white !important; }
-        .st-FD { background: #ff6d00 !important; color: white !important; }           
+        .st-FD { background: #ff6d00 !important; color: white !important; }            
         .st-FE { background: #ffd600 !important; color: #000 !important; border: 1px solid #000; }            
         .st-FER { background: #1b5e20 !important; color: white !important; }
         
         .glass-card { background: var(--card); border-radius: 25px; border: 3px solid var(--border); padding: 25px; width: fit-content; margin: 0 auto 30px auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .table-title { font-weight: 900; font-size: 1.4rem; color: var(--accent); margin-bottom: 20px; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; gap: 15px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .table-title { font-weight: 900; font-size: 1.4rem; color: var(--accent); margin-bottom: 20px; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
         
-        /* TABELA E CABEÇALHOS */
-        .table-modern th { text-align: center; font-size: 0.8rem; color: #000; padding: 10px 5px; border-bottom: 3px solid var(--border); border-right: 1px solid #cbd5e1; }
-        .td-name { background: var(--name-bg); color: #000; border-radius: 0px; padding: 12px 18px; min-width: 180px; border: 2px solid var(--border) !important; position: relative; font-size: 0.9rem; }
+        .table-modern th { text-align: center; font-size: 0.8rem; color: var(--text); padding: 10px 5px; border-bottom: 3px solid var(--border); border-right: 1px solid var(--border); }
+        .td-name { background: var(--name-bg); color: var(--text); border-radius: 0px; padding: 12px 18px; min-width: 180px; border: 2px solid var(--border) !important; position: relative; font-size: 0.9rem; }
         .btn-del-row { position: absolute; left: -12px; top: 12px; color: #d32f2f; cursor: pointer; font-size: 1rem; background: white; border-radius: 50%; padding: 2px; }
         
         .slot { width: 40px; height: 40px; border-radius: 8px; background: var(--slot-bg); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 900; cursor: pointer; border: 1px solid var(--border); }
         
         .legend-footer { margin-top: 15px; padding-top: 15px; border-top: 3px solid var(--border); display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; background: #fff; padding: 6px 10px; border-radius: 8px; border: 2px solid var(--border); color: #000; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; background: var(--card); padding: 6px 10px; border-radius: 8px; border: 2px solid var(--border); color: var(--text); }
         .legend-dot { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #000; }
 
-        .capturing .btn-del-row, .capturing .btn-capture { display: none !important; }
+        .capturing .btn-del-row, .capturing .btn-sm, .capturing .btn-cap-single { display: none !important; }
+        .capturing .glass-card { border: 4px solid #000 !important; box-shadow: none !important; margin: 0 !important; }
     </style>
 </head>
 <body onmouseup="stopPainting()" onmouseleave="stopPainting()">
 
     <div class="sync-indicator">
         <div class="pulse-dot" id="dot"></div>
-        <span id="sync-label" style="color:#000">Sincronizando...</span>
+        <span id="sync-label" style="color:var(--text)">Sincronizando...</span>
     </div>
 
     <div id="main-wrapper">
@@ -109,6 +117,7 @@
                     <button class="btn-box" onclick="changeBox(1)"><i class="fas fa-plus"></i> Adicionar Mês</button>
                     <button class="btn-box bg-danger" onclick="changeBox(-1)"><i class="fas fa-minus"></i> Remover Mês</button>
                     <button class="btn-box bg-success" onclick="save()"><i class="fas fa-save"></i> SALVAR DADOS</button>
+                    <button class="btn-box bg-secondary" onclick="toggleTheme()"><i class="fas fa-adjust"></i> TEMA</button>
                 </div>
             </div>
 
@@ -222,7 +231,7 @@
                     }
                     if (visibleDays.length === 0) continue;
 
-                    let head = `<th class="td-name">TÉCNICO</th>` + visibleDays.map(d => `<th style="background:#f8fafc">${d}<br>${['DOM','SEG','TER','QUA','QUI','SEX','SAB'][new Date(cA, cM, d).getDay()]}</th>`).join('');
+                    let head = `<th class="td-name">TÉCNICO</th>` + visibleDays.map(d => `<th style="background:var(--slot-bg); color:var(--text);">${d}<br>${['DOM','SEG','TER','QUA','QUI','SEX','SAB'][new Date(cA, cM, d).getDay()]}</th>`).join('');
                     let rows = items.map((item, idx) => {
                         let r = `<td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${cM}, ${cA}, ${idx})"></i>${item.nome}</td>`;
                         visibleDays.forEach(d => {
@@ -234,11 +243,17 @@
                     }).join('');
                     h += `<div class="glass-card" id="${boxID}"><div class="table-title">CP GERAL: ${meses[cM].toUpperCase()} ${cA}
                         <button class="btn btn-sm btn-dark ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
+                        <button class="btn btn-sm btn-info ms-2 btn-cap-single" onclick="baixarBox('${boxID}')"><i class="fas fa-camera"></i></button>
                     </div><table class="table-modern"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>${legendHTML}</div>`;
                 } else {
                     let weekH = "";
-                    for(let s=1; s<=5; s++) weekH += `<tr><td colspan="3" class="text-center py-2" style="color:var(--accent); background:#e2e8f0; border:1px solid #000">SEMANA ${s}</td></tr>${getRowsWeek(cM, cA, curTab, s)}`;
-                    h += `<div class="glass-card" id="${boxID}" style="min-width:550px"><div class="table-title">${curTab.toUpperCase()}: ${meses[cM].toUpperCase()}
+                    for(let s=1; s<=5; s++) {
+                        let weekID = `week-${curTab}-${b}-${s}`;
+                        weekH += `<tr><td colspan="3" class="p-0"><div id="${weekID}" class="p-2"><div class="d-flex justify-content-center align-items-center gap-2 mb-2" style="color:white; background:var(--accent); border:1px solid #000; padding: 5px;">
+                            SEMANA ${s} <button class="btn btn-sm btn-light py-0 btn-cap-single" onclick="baixarBox('${weekID}')"><i class="fas fa-camera" style="font-size:0.7rem"></i></button>
+                            </div><table class="table-modern w-100"><tbody>${getRowsWeek(cM, cA, curTab, s)}</tbody></table></div></td></tr>`;
+                    }
+                    h += `<div class="glass-card" style="min-width:550px"><div class="table-title">${curTab.toUpperCase()}: ${meses[cM].toUpperCase()}
                         <button class="btn btn-sm btn-dark ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
                     </div><table class="table-modern w-100"><thead><tr><th class="td-name">NOME</th><th>DATA</th><th>ST</th></tr></thead><tbody>${weekH}</tbody></table></div>`;
                 }
@@ -253,21 +268,35 @@
             return items.filter(x => x.semana == w).map(item => {
                 const idx = items.indexOf(item); const val = item.dias?.[1] || '';
                 return `<tr><td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${m}, ${a}, ${idx})"></i>${item.nome}</td>
-                    <td style="border:1px solid #000"><input type="text" class="bg-transparent border-0 text-center fw-900 w-100" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${idx}].dataManual=this.value"></td>
-                    <td style="border:1px solid #000"><div class="slot st-${val.replace('.','-')||'vazio'} mx-auto" onmousedown="handleMouseDown(event, ${m}, ${a}, ${idx}, 1)">${val}</div></td></tr>`;
+                    <td style="border:1px solid var(--border)"><input type="text" class="bg-transparent border-0 text-center fw-900 w-100" style="color:var(--text)" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${idx}].dataManual=this.value"></td>
+                    <td style="border:1px solid var(--border)"><div class="slot st-${val.replace('.','-')||'vazio'} mx-auto" onmousedown="handleMouseDown(event, ${m}, ${a}, ${idx}, 1)">${val}</div></td></tr>`;
             }).join('');
         }
 
-        // FUNÇÃO DE ARRASTAR COM BOTÃO ESQUERDO
-        function handleMouseDown(e, m, a, idx, d) {
-            if (e.button === 0) {
-                isPainting = true;
-                paint(m, a, idx, d);
-            }
+        function toggleTheme() {
+            const h = document.documentElement;
+            h.setAttribute('data-theme', h.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+            render();
         }
-        function moveP(e, m, a, idx, d) {
-            if (isPainting && selectedTool !== 'FF') paint(m, a, idx, d);
+
+        async function baixarBox(id) {
+            const el = document.getElementById(id);
+            document.body.classList.add('capturing');
+            const canvas = await html2canvas(el, {
+                scale: 2,
+                backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg'),
+                logging: false,
+                useCORS: true
+            });
+            const link = document.createElement('a');
+            link.download = `Escala_${id}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            document.body.classList.remove('capturing');
         }
+
+        function handleMouseDown(e, m, a, idx, d) { if (e.button === 0) { isPainting = true; paint(m, a, idx, d); } }
+        function moveP(e, m, a, idx, d) { if (isPainting && selectedTool !== 'FF') paint(m, a, idx, d); }
         function stopPainting() { isPainting = false; }
 
         function paint(m, a, idx, d) {
