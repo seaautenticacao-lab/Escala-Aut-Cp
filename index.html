@@ -3,81 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Management | CP GERAL v28</title>
+    <title>Elite Management | High Contrast v29</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap');
         
+        /* DEFINIÇÕES DE CONTRASTE DINÂMICO */
         :root[data-theme="dark"] {
-            --accent: #6366f1; --bg: #0f172a; --card: #1e293b; --text: #ffffff; --border: #334155;
-            --sub-text: #cbd5e1; --name-bg: #0f172a; --slot-bg: #1e293b;
+            --accent: #818cf8; --bg: #020617; --card: #0f172a; --text: #f8fafc;
+            --border: #475569; --sub-text: #94a3b8; --name-bg: #1e293b; --slot-bg: #334155;
+            --table-border: #475569; --input-bg: #1e293b;
         }
         :root[data-theme="light"] {
-            --accent: #4f46e5; --bg: #f8fafc; --card: #ffffff; --text: #000000; --border: #94a3b8;
-            --sub-text: #1e293b; --name-bg: #f1f5f9; --slot-bg: #cbd5e1;
+            --accent: #4338ca; --bg: #f8fafc; --card: #ffffff; --text: #000000;
+            --border: #1e293b; --sub-text: #334155; --name-bg: #e2e8f0; --slot-bg: #cbd5e1;
+            --table-border: #000000; --input-bg: #ffffff;
         }
 
         body { 
             background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; 
-            font-weight: 900; transition: 0.3s; 
-            user-select: none; /* Impede seleção de texto ao arrastar */
-            -webkit-user-drag: none; /* Impede arraste de elementos do navegador */
+            font-weight: 900; transition: background 0.3s, color 0.3s; 
+            user-select: none; -webkit-user-drag: none;
         }
         
-        .sync-indicator { position: fixed; top: 20px; left: 20px; font-size: 0.75rem; font-weight: 900; display: flex; align-items: center; gap: 8px; background: var(--card); padding: 10px 18px; border-radius: 50px; z-index: 1000; border: 2px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .pulse-dot { width: 10px; height: 10px; background: #00ff88; border-radius: 50%; }
+        /* ELEMENTOS DE INTERFACE */
+        .sync-indicator { position: fixed; top: 20px; left: 20px; font-size: 0.8rem; font-weight: 900; display: flex; align-items: center; gap: 8px; background: var(--card); padding: 10px 18px; border-radius: 50px; z-index: 1000; border: 2px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .pulse-dot { width: 10px; height: 10px; background: #22c55e; border-radius: 50%; }
 
         .sidebar-nav { background: var(--card); border-radius: 20px; padding: 8px; display: flex; gap: 8px; margin: 20px auto; width: fit-content; border: 2px solid var(--border); }
         .nav-btn { border: none; background: transparent; color: var(--text); padding: 12px 24px; border-radius: 15px; font-weight: 900; cursor: pointer; text-transform: uppercase; }
-        .nav-btn.active { background: var(--accent); color: #fff !important; }
+        .nav-btn.active { background: var(--accent); color: #fff !important; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         
-        .paint-palette { background: var(--card); padding: 25px; border-radius: 25px; margin: 0 auto 25px; max-width: 1250px; border: 2px solid var(--border); }
-        .mes-badge { background: #4f46e5; color: #fff; padding: 10px 25px; border-radius: 50px; font-weight: 900; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border: 2px solid rgba(255,255,255,0.3); }
-        .mes-select-transparent { background: transparent; border: none; color: white; font-weight: 900; cursor: pointer; outline: none; }
+        .paint-palette { background: var(--card); padding: 25px; border-radius: 25px; margin: 0 auto 25px; max-width: 1250px; border: 3px solid var(--border); }
+        .mes-badge { background: var(--accent); color: #fff; padding: 12px 25px; border-radius: 50px; font-weight: 900; display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border: 2px solid var(--table-border); }
         
-        .btn-box { background: var(--accent); color: white; border: none; padding: 8px 20px; border-radius: 12px; font-weight: 900; margin: 0 5px; cursor: pointer; }
+        .mes-select-transparent { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; font-weight: 900; cursor: pointer; border-radius: 8px; padding: 4px; }
+        .mes-select-transparent option { color: #000; }
+        
+        .btn-box { background: var(--text); color: var(--bg); border: 2px solid var(--border); padding: 8px 20px; border-radius: 12px; font-weight: 900; margin: 0 5px; cursor: pointer; }
 
-        .tools-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding-top: 15px; border-top: 2px solid var(--border); }
-        .paint-tool { min-width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; font-weight: 900; color: white !important; }
-        .paint-tool.active { outline: 3px solid var(--text); transform: scale(1.1); }
+        .tools-wrapper { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding-top: 15px; border-top: 3px solid var(--border); }
+        .paint-tool { min-width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; font-weight: 900; color: white !important; border: 2px solid rgba(0,0,0,0.2); transition: 0.1s; }
+        .paint-tool.active { outline: 4px solid var(--text); transform: scale(1.1); box-shadow: 0 0 15px rgba(0,0,0,0.4); }
 
-        /* CORES VÍVIDAS */
+        /* CORES DAS CÉLULAS (NITIDEZ MÁXIMA) */
         .st-9H, .st-14H { background: #0044ff !important; color: white !important; }
         .st-8H, .st-13H { background: #00e676 !important; color: #000 !important; } 
         .st-11H { background: #00e5ff !important; color: #000 !important; }        
-        .st-0-5 { background: #ffffff !important; color: #000 !important; border: 1px solid #334155; }
+        .st-0-5 { background: #ffffff !important; color: #000 !important; border: 2px solid #000 !important; }
         .st-F { background: #ff1744 !important; color: white !important; }           
         .st-BH-1, .st-BH-05 { background: #d500f9 !important; color: white !important; } 
-        .st-FF { background: #455a64 !important; color: white !important; }
+        .st-FF { background: #475569 !important; color: white !important; }
         .st-FD { background: #ff6d00 !important; color: white !important; }           
-        .st-FE { background: #ffea00 !important; color: #000 !important; }            
-        .st-FER { background: #1b5e20 !important; color: white !important; }
+        .st-FE { background: #ffea00 !important; color: #000 !important; border: 1px solid #000; }            
+        .st-FER { background: #166534 !important; color: white !important; }
         
-        .glass-card { background: var(--card); border-radius: 25px; border: 2px solid var(--border); padding: 25px; width: fit-content; margin: 0 auto 30px auto; position: relative; }
-        .table-title { font-weight: 900; font-size: 1.2rem; color: #4f46e5; margin-bottom: 20px; text-transform: uppercase; text-align: center; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        /* TABELA */
+        .glass-card { background: var(--card); border-radius: 25px; border: 3px solid var(--border); padding: 25px; width: fit-content; margin: 0 auto 30px auto; position: relative; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        .table-title { font-weight: 900; font-size: 1.4rem; color: var(--accent); margin-bottom: 20px; text-transform: uppercase; text-align: center; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
         
-        .btn-capture { background: var(--border); color: var(--text); border: none; width: 32px; height: 32px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .table-modern th { text-align: center; font-size: 0.8rem; color: var(--text); padding: 10px 5px; border-bottom: 3px solid var(--table-border); border-right: 1px solid var(--border); }
+        .td-name { background: var(--name-bg); color: var(--text); border: 2px solid var(--table-border) !important; padding: 12px 18px; min-width: 180px; position: relative; }
+        
+        .slot { width: 42px; height: 42px; border-radius: 8px; background: var(--slot-bg); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 900; cursor: pointer; border: 1px solid var(--table-border); transition: transform 0.05s; }
+        
+        .legend-footer { margin-top: 15px; padding-top: 15px; border-top: 3px solid var(--border); display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; background: var(--card); padding: 6px 12px; border-radius: 8px; border: 2px solid var(--border); }
+        .legend-dot { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #000; }
 
-        .table-modern th { text-align: center; font-size: 0.75rem; color: var(--text); padding: 8px 4px; border-bottom: 2px solid var(--border); }
-        .td-name { background: var(--name-bg); color: var(--text); border-radius: 10px; padding: 12px 18px; min-width: 170px; border: 2px solid var(--border); position: relative; }
-        .btn-del-row { position: absolute; left: -10px; top: 10px; color: #ff1744; cursor: pointer; font-size: 0.9rem; }
-        
-        .slot { width: 38px; height: 38px; border-radius: 8px; background: var(--slot-bg); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.1s; }
-        
-        .legend-footer { margin-top: 15px; padding-top: 12px; border-top: 2px solid var(--border); display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.65rem; background: var(--bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
-        .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
-
-        .capturing .btn-del-row, .capturing .btn-capture { display: none !important; }
+        .btn-del-row { position: absolute; left: -12px; top: 12px; color: #ef4444; cursor: pointer; background: var(--card); border-radius: 50%; padding: 2px; border: 1px solid var(--border); }
     </style>
 </head>
 <body onmouseup="stopPainting()" onmouseleave="stopPainting()">
 
     <div class="sync-indicator">
         <div class="pulse-dot" id="dot"></div>
-        <span id="sync-label">Aguardando...</span>
+        <span id="sync-label">CARREGANDO...</span>
     </div>
 
     <div id="main-wrapper">
@@ -92,16 +95,15 @@
                 <div class="mes-badge">
                     <select id="sel-mes" class="mes-select-transparent" onchange="render();"></select>
                     <select id="sel-ano" class="mes-select-transparent" onchange="render();"></select>
-                    <span class="ms-3 me-1" style="font-size: 0.7rem; opacity: 0.8;">FILTRO:</span>
-                    <input type="date" id="filtro-inicio" class="mes-select-transparent" onchange="render();" style="width: 130px;">
-                    <input type="date" id="filtro-fim" class="mes-select-transparent" onchange="render();" style="width: 130px;">
-                    <button class="btn-capture ms-2" onclick="limparFiltro()"><i class="fas fa-times"></i></button>
+                    <span class="ms-3 me-1" style="font-size: 0.75rem;">FILTRO:</span>
+                    <input type="date" id="filtro-inicio" class="mes-select-transparent" onchange="render();">
+                    <input type="date" id="filtro-fim" class="mes-select-transparent" onchange="render();">
+                    <button class="btn btn-sm btn-light ms-2" onclick="limparFiltro()"><i class="fas fa-times"></i></button>
                 </div>
-                <div>
-                    <button class="btn-box" onclick="changeBox(1)"><i class="fas fa-plus"></i> Mês</button>
-                    <button class="btn-box bg-danger" onclick="changeBox(-1)"><i class="fas fa-minus"></i> Mês</button>
-                    <button class="btn-box bg-secondary" onclick="toggleTheme()">Tema</button>
-                    <button class="btn-box bg-success" onclick="save()"><i class="fas fa-save"></i> SALVAR TUDO</button>
+                <div class="d-flex gap-2">
+                    <button class="btn-box" onclick="changeBox(1)"><i class="fas fa-plus"></i> MÊS</button>
+                    <button class="btn-box" onclick="toggleTheme()"><i class="fas fa-adjust"></i> TEMA</button>
+                    <button class="btn-box bg-success text-white" onclick="save()"><i class="fas fa-save"></i> SALVAR</button>
                 </div>
             </div>
 
@@ -120,26 +122,26 @@
                 <div class="paint-tool st-FD" onclick="selectTool('FD', this)">FD</div>
                 <div class="paint-tool st-FE" onclick="selectTool('FE', this)">FE</div>
                 <div class="paint-tool bg-dark ms-2" onclick="selectTool('', this)"><i class="fas fa-eraser"></i></div>
-                <button class="btn btn-primary ms-3 rounded-pill fw-900" onclick="modalNomes.show()">EQUIPE</button>
+                <button class="btn btn-primary ms-3 rounded-pill fw-900 border-2 border-dark shadow" onclick="modalNomes.show()">EQUIPE</button>
             </div>
         </div>
         <div id="render-zone"></div>
     </div>
 
     <div class="modal fade" id="modalNomes" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content glass-card"><div class="modal-body">
-        <h5 class="fw-900">Equipe Geral</h5>
-        <div class="input-group my-3"><input id="inNome" class="form-control" placeholder="Nome..."><button class="btn btn-primary" onclick="addN()">OK</button></div>
+        <h5 class="fw-900">Gerenciar Equipe</h5>
+        <div class="input-group my-3"><input id="inNome" class="form-control border-dark" placeholder="Nome..."><button class="btn btn-primary" onclick="addN()">OK</button></div>
         <div id="listN" class="list-group"></div>
     </div></div></div></div>
 
     <div class="modal fade" id="modalAdd" tabindex="-1"><div class="modal-dialog modal-sm modal-dialog-centered"><div class="modal-content glass-card"><div class="modal-body">
-        <h6 class="fw-900 text-center">Escalar para este Mês</h6>
-        <select id="selT" class="form-select mb-3"></select>
+        <h6 class="fw-900 text-center">Adicionar à Escala</h6>
+        <select id="selT" class="form-select mb-3 border-dark"></select>
         <div id="extra-fields" style="display:none">
-            <select id="selS" class="form-select mb-3"><option value="1">1ª Semana</option><option value="2">2ª Semana</option><option value="3">3ª Semana</option><option value="4">4ª Semana</option><option value="5">5ª Semana</option></select>
+            <select id="selS" class="form-select mb-3 border-dark"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option></select>
         </div>
         <input type="hidden" id="targetMonth"><input type="hidden" id="targetYear">
-        <button class="btn btn-primary w-100 fw-900" onclick="confirmAdd()">ADICIONAR</button>
+        <button class="btn btn-primary w-100 fw-900" onclick="confirmAdd()">CONFIRMAR</button>
     </div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -173,38 +175,29 @@
 
         async function save() {
             document.getElementById('sync-label').innerText = "SALVANDO...";
-            document.getElementById('dot').style.background = "#ff9800";
             try {
                 await fetch(`https://api.jsonbin.io/v3/b/${API.b}`, {
                     method: 'PUT', headers: { "Content-Type": "application/json", "X-Master-Key": API.k },
                     body: JSON.stringify(db)
                 });
                 document.getElementById('sync-label').innerText = "SALVO!";
-                document.getElementById('dot').style.background = "#00ff88";
             } catch (e) { document.getElementById('sync-label').innerText = "ERRO!"; }
         }
 
         async function load() {
             try {
                 const r = await fetch(`https://api.jsonbin.io/v3/b/${API.b}/latest`, { headers: { "X-Master-Key": API.k, "X-Bin-Meta": "false" }});
-                const data = await r.json();
-                if(!data.escalas) {
-                    const m = new Date().getMonth(); const a = new Date().getFullYear();
-                    const key = getMonthKey(m, a);
-                    db.escalas[key] = { autenticacao: data.autenticacao || [], sabado: data.sabado || [], domingo: data.domingo || [] };
-                    db.nomesLista = data.nomesLista || []; db.config = data.config || { boxCount: 1 };
-                } else { db = data; }
-                render(); document.getElementById('sync-label').innerText = "DADOS OK";
-            } catch (e) {}
+                db = await r.json();
+                render();
+                document.getElementById('sync-label').innerText = "SINCRO OK";
+            } catch (e) { document.getElementById('sync-label').innerText = "OFFLINE"; }
         }
 
-        function downloadBox(id) {
-            const el = document.getElementById(id);
-            el.classList.add('capturing');
-            html2canvas(el, { scale: 3, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() }).then(canvas => {
-                const link = document.createElement('a'); link.download = `Escala_CP_GERAL.png`;
-                link.href = canvas.toDataURL(); link.click(); el.classList.remove('capturing');
-            });
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+            render();
         }
 
         function render() {
@@ -242,20 +235,18 @@
                         return `<tr>${r}</tr>`;
                     }).join('');
                     h += `<div class="glass-card" id="${boxID}"><div class="table-title">CP GERAL: ${meses[cM].toUpperCase()} ${cA}
-                        <button class="btn btn-sm btn-primary ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
-                        <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button>
+                        <button class="btn btn-sm btn-dark border-light ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
                     </div><table class="table-modern"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>${legendHTML}</div>`;
                 } else {
                     let weekH = "";
-                    for(let s=1; s<=5; s++) weekH += `<tr><td colspan="3" class="text-center py-2" style="color:var(--accent)">SEMANA ${s}</td></tr>${getRowsWeek(cM, cA, curTab, s)}`;
+                    for(let s=1; s<=5; s++) weekH += `<tr><td colspan="3" class="text-center py-2" style="background:var(--name-bg); border:1px solid var(--table-border)">SEMANA ${s}</td></tr>${getRowsWeek(cM, cA, curTab, s)}`;
                     h += `<div class="glass-card" id="${boxID}" style="min-width:550px"><div class="table-title">${curTab.toUpperCase()}: ${meses[cM].toUpperCase()}
-                        <button class="btn btn-sm btn-primary ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
-                        <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button>
+                        <button class="btn btn-sm btn-dark border-light ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
                     </div><table class="table-modern w-100"><thead><tr><th class="td-name">NOME</th><th>DATA</th><th>ST</th></tr></thead><tbody>${weekH}</tbody></table></div>`;
                 }
             }
             area.innerHTML = h;
-            document.getElementById('listN').innerHTML = (db.nomesLista || []).map((n, i) => `<div class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between"><span>${n}</span> <i class="fas fa-trash text-danger" onclick="delN(${i})"></i></div>`).join('');
+            document.getElementById('listN').innerHTML = (db.nomesLista || []).map((n, i) => `<div class="list-group-item bg-light text-dark border-dark d-flex justify-content-between mb-1"><strong>${n}</strong> <i class="fas fa-trash text-danger" onclick="delN(${i})"></i></div>`).join('');
             document.getElementById('selT').innerHTML = (db.nomesLista || []).map(n => `<option>${n}</option>`).join('');
         }
 
@@ -264,29 +255,14 @@
             return items.filter(x => x.semana == w).map(item => {
                 const idx = items.indexOf(item); const val = item.dias?.[1] || '';
                 return `<tr><td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${m}, ${a}, ${idx})"></i>${item.nome}</td>
-                    <td><input type="text" class="bg-transparent border-0 text-white text-center fw-900" style="width:80px" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${idx}].dataManual=this.value"></td>
-                    <td><div class="slot st-${val.replace('.','-')||'vazio'}" onmousedown="handleMouseDown(event, ${m}, ${a}, ${idx}, 1)">${val}</div></td></tr>`;
+                    <td style="border:1px solid var(--table-border)"><input type="text" class="bg-transparent border-0 text-center fw-900 w-100" style="color:var(--text)" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${idx}].dataManual=this.value"></td>
+                    <td style="border:1px solid var(--table-border)"><div class="slot st-${val.replace('.','-')||'vazio'} mx-auto" onmousedown="handleMouseDown(event, ${m}, ${a}, ${idx}, 1)">${val}</div></td></tr>`;
             }).join('');
         }
 
-        // NOVA LÓGICA: BOTÃO ESQUERDO PARA PINTAR E ARRASTAR
-        function handleMouseDown(e, m, a, idx, d) {
-            if (e.button === 0) { // Botão Esquerdo
-                isPainting = true;
-                paint(m, a, idx, d);
-            }
-        }
-
-        function moveP(e, m, a, idx, d) {
-            // Pinta ao passar o mouse se o botão esquerdo estiver pressionado
-            if (isPainting && selectedTool !== 'FF') {
-                paint(m, a, idx, d);
-            }
-        }
-
-        function stopPainting() { 
-            isPainting = false; 
-        }
+        function handleMouseDown(e, m, a, idx, d) { if (e.button === 0) { isPainting = true; paint(m, a, idx, d); } }
+        function moveP(e, m, a, idx, d) { if (isPainting && selectedTool !== 'FF') paint(m, a, idx, d); }
+        function stopPainting() { isPainting = false; }
 
         function paint(m, a, idx, d) {
             if(selectedTool === null) return;
@@ -311,8 +287,7 @@
         function changeBox(v) { db.config.boxCount = Math.max(1, (db.config.boxCount||1) + v); render(); }
         function addN() { const i = document.getElementById('inNome'); if(i.value) { db.nomesLista.push(i.value); i.value=''; render(); } }
         function delN(i) { db.nomesLista.splice(i,1); render(); }
-        function delE(m, a, idx) { if(confirm("Remover da escala?")){ db.escalas[getMonthKey(m,a)][curTab].splice(idx,1); render(); } }
-        function toggleTheme() { const r = document.documentElement; r.setAttribute('data-theme', r.getAttribute('data-theme')==='dark'?'light':'dark'); }
+        function delE(m, a, idx) { if(confirm("Remover?")){ db.escalas[getMonthKey(m,a)][curTab].splice(idx,1); render(); } }
         function limparFiltro() { document.getElementById('filtro-inicio').value=''; document.getElementById('filtro-fim').value=''; render(); }
 
         window.onload = load;
