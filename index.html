@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Management | CP GERAL v27</title>
+    <title>Elite Management | CP GERAL v28</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -19,7 +19,12 @@
             --sub-text: #1e293b; --name-bg: #f1f5f9; --slot-bg: #cbd5e1;
         }
 
-        body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; font-weight: 900; transition: 0.3s; user-select: none; }
+        body { 
+            background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; 
+            font-weight: 900; transition: 0.3s; 
+            user-select: none; /* Impede seleção de texto ao arrastar */
+            -webkit-user-drag: none; /* Impede arraste de elementos do navegador */
+        }
         
         .sync-indicator { position: fixed; top: 20px; left: 20px; font-size: 0.75rem; font-weight: 900; display: flex; align-items: center; gap: 8px; background: var(--card); padding: 10px 18px; border-radius: 50px; z-index: 1000; border: 2px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         .pulse-dot { width: 10px; height: 10px; background: #00ff88; border-radius: 50%; }
@@ -59,7 +64,7 @@
         .td-name { background: var(--name-bg); color: var(--text); border-radius: 10px; padding: 12px 18px; min-width: 170px; border: 2px solid var(--border); position: relative; }
         .btn-del-row { position: absolute; left: -10px; top: 10px; color: #ff1744; cursor: pointer; font-size: 0.9rem; }
         
-        .slot { width: 38px; height: 38px; border-radius: 8px; background: var(--slot-bg); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+        .slot { width: 38px; height: 38px; border-radius: 8px; background: var(--slot-bg); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.1s; }
         
         .legend-footer { margin-top: 15px; padding-top: 12px; border-top: 2px solid var(--border); display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.65rem; background: var(--bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
@@ -68,7 +73,7 @@
         .capturing .btn-del-row, .capturing .btn-capture { display: none !important; }
     </style>
 </head>
-<body onmouseup="stopPainting()" onmouseleave="stopPainting()" oncontextmenu="return false;">
+<body onmouseup="stopPainting()" onmouseleave="stopPainting()">
 
     <div class="sync-indicator">
         <div class="pulse-dot" id="dot"></div>
@@ -264,19 +269,16 @@
             }).join('');
         }
 
-        // LÓGICA DE MOUSE: BOTÃO DIREITO PARA ARRASTAR
+        // NOVA LÓGICA: BOTÃO ESQUERDO PARA PINTAR E ARRASTAR
         function handleMouseDown(e, m, a, idx, d) {
-            if (e.button === 2) { // Botão DIREITO
+            if (e.button === 0) { // Botão Esquerdo
                 isPainting = true;
                 paint(m, a, idx, d);
-            } else if (e.button === 0) { // Botão ESQUERDO
-                paint(m, a, idx, d);
-                isPainting = false; 
             }
         }
 
         function moveP(e, m, a, idx, d) {
-            // Só pinta se o modo isPainting (Botão Direito) estiver ativo
+            // Pinta ao passar o mouse se o botão esquerdo estiver pressionado
             if (isPainting && selectedTool !== 'FF') {
                 paint(m, a, idx, d);
             }
