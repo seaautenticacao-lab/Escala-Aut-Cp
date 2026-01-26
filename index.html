@@ -295,8 +295,23 @@
             document.body.classList.remove('capturing');
         }
 
-        function handleMouseDown(e, m, a, idx, d) { if (e.button === 0) { isPainting = true; paint(m, a, idx, d); } }
-        function moveP(e, m, a, idx, d) { if (isPainting && selectedTool !== 'FF') paint(m, a, idx, d); }
+        // ALTERAÇÃO SOLICITADA: Validação estrita do botão esquerdo (buttons === 1)
+        function handleMouseDown(e, m, a, idx, d) { 
+            if (e.buttons === 1) { // Verifica se apenas o botão esquerdo está pressionado
+                isPainting = true; 
+                paint(m, a, idx, d); 
+            } 
+        }
+
+        function moveP(e, m, a, idx, d) { 
+            // Garante que a pintura só ocorra se o botão esquerdo continuar pressionado
+            if (isPainting && e.buttons === 1 && selectedTool !== 'FF') {
+                paint(m, a, idx, d); 
+            } else if (e.buttons !== 1) {
+                isPainting = false;
+            }
+        }
+
         function stopPainting() { isPainting = false; }
 
         function paint(m, a, idx, d) {
