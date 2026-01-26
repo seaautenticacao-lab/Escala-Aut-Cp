@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Management | CP GERAL Edition</title>
+    <title>Elite Management | CP GERAL v27</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -38,7 +38,7 @@
         .paint-tool { min-width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; font-weight: 900; color: white !important; }
         .paint-tool.active { outline: 3px solid var(--text); transform: scale(1.1); }
 
-        /* --- CORES VÍVIDAS --- */
+        /* CORES VÍVIDAS */
         .st-9H, .st-14H { background: #0044ff !important; color: white !important; }
         .st-8H, .st-13H { background: #00e676 !important; color: #000 !important; } 
         .st-11H { background: #00e5ff !important; color: #000 !important; }        
@@ -59,22 +59,16 @@
         .td-name { background: var(--name-bg); color: var(--text); border-radius: 10px; padding: 12px 18px; min-width: 170px; border: 2px solid var(--border); position: relative; }
         .btn-del-row { position: absolute; left: -10px; top: 10px; color: #ff1744; cursor: pointer; font-size: 0.9rem; }
         
-        .slot { 
-            width: 38px; height: 38px; border-radius: 8px; background: var(--slot-bg); 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 0.7rem; font-weight: 900; cursor: pointer; 
-            border: 1px solid rgba(255,255,255,0.1); text-align: center;
-        }
+        .slot { width: 38px; height: 38px; border-radius: 8px; background: var(--slot-bg); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
         
         .legend-footer { margin-top: 15px; padding-top: 12px; border-top: 2px solid var(--border); display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
         .legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.65rem; background: var(--bg); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
         .legend-dot { width: 14px; height: 14px; border-radius: 3px; }
 
-        .fab-add { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: #4f46e5; color: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: none; cursor: pointer; z-index: 100; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
         .capturing .btn-del-row, .capturing .btn-capture { display: none !important; }
     </style>
 </head>
-<body onmouseup="stopPainting()" onmouseleave="stopPainting()">
+<body onmouseup="stopPainting()" onmouseleave="stopPainting()" oncontextmenu="return false;">
 
     <div class="sync-indicator">
         <div class="pulse-dot" id="dot"></div>
@@ -139,15 +133,13 @@
         <div id="extra-fields" style="display:none">
             <select id="selS" class="form-select mb-3"><option value="1">1ª Semana</option><option value="2">2ª Semana</option><option value="3">3ª Semana</option><option value="4">4ª Semana</option><option value="5">5ª Semana</option></select>
         </div>
-        <input type="hidden" id="targetMonth">
-        <input type="hidden" id="targetYear">
+        <input type="hidden" id="targetMonth"><input type="hidden" id="targetYear">
         <button class="btn btn-primary w-100 fw-900" onclick="confirmAdd()">ADICIONAR</button>
     </div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const API = { k: '$2a$10$Q2kXyLLkTCC5B3yZji9a3.DpwGfIxqoCxivdXlEX95CSREglkI/xG', b: '696fe1e1ae596e708fe97dbb' };
-        
         let db = { escalas: {}, nomesLista: [], config: { boxCount: 1 } };
         let curTab = 'autenticacao', selectedTool = null, isPainting = false;
 
@@ -191,23 +183,13 @@
             try {
                 const r = await fetch(`https://api.jsonbin.io/v3/b/${API.b}/latest`, { headers: { "X-Master-Key": API.k, "X-Bin-Meta": "false" }});
                 const data = await r.json();
-                
                 if(!data.escalas) {
-                    const m = new Date().getMonth();
-                    const a = new Date().getFullYear();
+                    const m = new Date().getMonth(); const a = new Date().getFullYear();
                     const key = getMonthKey(m, a);
-                    db.escalas[key] = {
-                        autenticacao: data.autenticacao || [],
-                        sabado: data.sabado || [],
-                        domingo: data.domingo || []
-                    };
-                    db.nomesLista = data.nomesLista || [];
-                    db.config = data.config || { boxCount: 1 };
-                } else {
-                    db = data;
-                }
-                render();
-                document.getElementById('sync-label').innerText = "DADOS OK";
+                    db.escalas[key] = { autenticacao: data.autenticacao || [], sabado: data.sabado || [], domingo: data.domingo || [] };
+                    db.nomesLista = data.nomesLista || []; db.config = data.config || { boxCount: 1 };
+                } else { db = data; }
+                render(); document.getElementById('sync-label').innerText = "DADOS OK";
             } catch (e) {}
         }
 
@@ -215,28 +197,21 @@
             const el = document.getElementById(id);
             el.classList.add('capturing');
             html2canvas(el, { scale: 3, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `Escala_CP_GERAL.png`;
-                link.href = canvas.toDataURL();
-                link.click();
-                el.classList.remove('capturing');
+                const link = document.createElement('a'); link.download = `Escala_CP_GERAL.png`;
+                link.href = canvas.toDataURL(); link.click(); el.classList.remove('capturing');
             });
         }
 
         function render() {
             const area = document.getElementById('render-zone');
-            const mB = parseInt(mesSel.value);
-            const aB = parseInt(anoSel.value);
-            const fI = document.getElementById('filtro-inicio').value;
-            const fF = document.getElementById('filtro-fim').value;
+            const mB = parseInt(mesSel.value); const aB = parseInt(anoSel.value);
+            const fI = document.getElementById('filtro-inicio').value; const fF = document.getElementById('filtro-fim').value;
             let h = "";
             let legendHTML = '<div class="legend-footer">' + legendData.map(l => `<div class="legend-item"><div class="legend-dot ${l.c}"></div><span>${l.t}</span></div>`).join('') + '</div>';
-
             const count = db.config?.boxCount || 1;
 
             for(let b=0; b < count; b++) {
-                let cM = (mB + b) % 12;
-                let cA = aB + Math.floor((mB + b) / 12);
+                let cM = (mB + b) % 12; let cA = aB + Math.floor((mB + b) / 12);
                 let dim = new Date(cA, cM + 1, 0).getDate();
                 let boxID = `box-${curTab}-${b}`;
                 const items = getEscala(cM, cA, curTab);
@@ -244,8 +219,7 @@
                 if(curTab === 'autenticacao') {
                     let visibleDays = [];
                     for(let d=1; d<=dim; d++){
-                        let dObj = new Date(cA, cM, d);
-                        let ok = true;
+                        let dObj = new Date(cA, cM, d); let ok = true;
                         if(fI && dObj < new Date(fI + "T00:00:00")) ok = false;
                         if(fF && dObj > new Date(fF + "T00:00:00")) ok = false;
                         if(ok) visibleDays.push(d);
@@ -256,30 +230,23 @@
                     let rows = items.map((item, idx) => {
                         let r = `<td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${cM}, ${cA}, ${idx})"></i>${item.nome}</td>`;
                         visibleDays.forEach(d => {
-                            let val = item.dias?.[d] || '';
-                            let isFF = val.toString().startsWith('FF:');
-                            let disp = isFF ? val.split(':')[1] : val;
-                            let cls = isFF ? 'FF' : val.toString().replace('.','-');
-                            r += `<td><div class="slot st-${cls||'vazio'}" onmousedown="startP(event, ${cM}, ${cA}, ${idx}, ${d})" onmouseenter="moveP(event, ${cM}, ${cA}, ${idx}, ${d})">${disp}</div></td>`;
+                            let val = item.dias?.[d] || ''; let isFF = val.toString().startsWith('FF:');
+                            let disp = isFF ? val.split(':')[1] : val; let cls = isFF ? 'FF' : val.toString().replace('.','-');
+                            r += `<td><div class="slot st-${cls||'vazio'}" onmousedown="handleMouseDown(event, ${cM}, ${cA}, ${idx}, ${d})" onmouseenter="moveP(event, ${cM}, ${cA}, ${idx}, ${d})">${disp}</div></td>`;
                         });
                         return `<tr>${r}</tr>`;
                     }).join('');
-
-                    h += `<div class="glass-card" id="${boxID}">
-                        <div class="table-title">CP GERAL: ${meses[cM].toUpperCase()} ${cA}
-                            <button class="btn btn-sm btn-primary ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
-                            <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button>
-                        </div>
-                        <table class="table-modern"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>${legendHTML}</div>`;
+                    h += `<div class="glass-card" id="${boxID}"><div class="table-title">CP GERAL: ${meses[cM].toUpperCase()} ${cA}
+                        <button class="btn btn-sm btn-primary ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
+                        <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button>
+                    </div><table class="table-modern"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>${legendHTML}</div>`;
                 } else {
                     let weekH = "";
                     for(let s=1; s<=5; s++) weekH += `<tr><td colspan="3" class="text-center py-2" style="color:var(--accent)">SEMANA ${s}</td></tr>${getRowsWeek(cM, cA, curTab, s)}`;
-                    h += `<div class="glass-card" id="${boxID}" style="min-width:550px">
-                        <div class="table-title">${curTab.toUpperCase()}: ${meses[cM].toUpperCase()}
-                            <button class="btn btn-sm btn-primary ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
-                            <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button>
-                        </div>
-                        <table class="table-modern w-100"><thead><tr><th class="td-name">NOME</th><th>DATA</th><th>ST</th></tr></thead><tbody>${weekH}</tbody></table></div>`;
+                    h += `<div class="glass-card" id="${boxID}" style="min-width:550px"><div class="table-title">${curTab.toUpperCase()}: ${meses[cM].toUpperCase()}
+                        <button class="btn btn-sm btn-primary ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
+                        <button class="btn-capture" onclick="downloadBox('${boxID}')"><i class="fas fa-camera"></i></button>
+                    </div><table class="table-modern w-100"><thead><tr><th class="td-name">NOME</th><th>DATA</th><th>ST</th></tr></thead><tbody>${weekH}</tbody></table></div>`;
                 }
             }
             area.innerHTML = h;
@@ -290,28 +257,34 @@
         function getRowsWeek(m, a, tab, w) {
             const items = getEscala(m, a, tab);
             return items.filter(x => x.semana == w).map(item => {
-                const idx = items.indexOf(item);
-                const val = item.dias?.[1] || '';
+                const idx = items.indexOf(item); const val = item.dias?.[1] || '';
                 return `<tr><td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${m}, ${a}, ${idx})"></i>${item.nome}</td>
                     <td><input type="text" class="bg-transparent border-0 text-white text-center fw-900" style="width:80px" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${idx}].dataManual=this.value"></td>
-                    <td><div class="slot st-${val.replace('.','-')||'vazio'}" onmousedown="startP(event, ${m}, ${a}, ${idx}, 1)">${val}</div></td></tr>`;
+                    <td><div class="slot st-${val.replace('.','-')||'vazio'}" onmousedown="handleMouseDown(event, ${m}, ${a}, ${idx}, 1)">${val}</div></td></tr>`;
             }).join('');
         }
 
-        function openAdd(m, a) { document.getElementById('targetMonth').value = m; document.getElementById('targetYear').value = a; modalAdd.show(); }
-        function confirmAdd() {
-            const m = document.getElementById('targetMonth').value;
-            const a = document.getElementById('targetYear').value;
-            const n = document.getElementById('selT').value;
-            const key = getMonthKey(m, a);
-            if(!db.escalas[key]) db.escalas[key] = { autenticacao: [], sabado: [], domingo: [] };
-            db.escalas[key][curTab].push({ nome: n, semana: document.getElementById('selS').value, dias: {}, dataManual: "" });
-            render(); modalAdd.hide();
+        // LÓGICA DE MOUSE: BOTÃO DIREITO PARA ARRASTAR
+        function handleMouseDown(e, m, a, idx, d) {
+            if (e.button === 2) { // Botão DIREITO
+                isPainting = true;
+                paint(m, a, idx, d);
+            } else if (e.button === 0) { // Botão ESQUERDO
+                paint(m, a, idx, d);
+                isPainting = false; 
+            }
         }
 
-        function startP(e, m, a, idx, d) { if (e.button === 0) { isPainting = true; paint(m, a, idx, d); } }
-        function moveP(e, m, a, idx, d) { if (isPainting && selectedTool !== 'FF') paint(m, a, idx, d); }
-        function stopPainting() { isPainting = false; }
+        function moveP(e, m, a, idx, d) {
+            // Só pinta se o modo isPainting (Botão Direito) estiver ativo
+            if (isPainting && selectedTool !== 'FF') {
+                paint(m, a, idx, d);
+            }
+        }
+
+        function stopPainting() { 
+            isPainting = false; 
+        }
 
         function paint(m, a, idx, d) {
             if(selectedTool === null) return;
@@ -320,6 +293,15 @@
             let fVal = selectedTool;
             if(selectedTool === 'FF'){ isPainting = false; let n = prompt("Feriado:"); fVal = n ? "FF:" + n : "FF"; }
             items[idx].dias[d] = fVal; render();
+        }
+
+        function openAdd(m, a) { document.getElementById('targetMonth').value = m; document.getElementById('targetYear').value = a; modalAdd.show(); }
+        function confirmAdd() {
+            const m = document.getElementById('targetMonth').value; const a = document.getElementById('targetYear').value;
+            const n = document.getElementById('selT').value; const key = getMonthKey(m, a);
+            if(!db.escalas[key]) db.escalas[key] = { autenticacao: [], sabado: [], domingo: [] };
+            db.escalas[key][curTab].push({ nome: n, semana: document.getElementById('selS').value, dias: {}, dataManual: "" });
+            render(); modalAdd.hide();
         }
 
         function selectTool(v, el) { selectedTool = v; document.querySelectorAll('.paint-tool').forEach(t => t.classList.remove('active')); if(el) el.classList.add('active'); }
