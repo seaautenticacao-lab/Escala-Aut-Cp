@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Management | Ultra Wide v30</title>
+    <title>Elite Management | Wide Precision v32</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -12,13 +12,11 @@
         
         :root[data-theme="dark"] {
             --accent: #818cf8; --bg: #020617; --card: #0f172a; --text: #f8fafc;
-            --border: #475569; --sub-text: #94a3b8; --name-bg: #1e293b; --slot-bg: #334155;
-            --table-border: #475569;
+            --border: #475569; --name-bg: #1e293b; --slot-bg: #334155; --table-border: #475569;
         }
         :root[data-theme="light"] {
             --accent: #4338ca; --bg: #f8fafc; --card: #ffffff; --text: #000000;
-            --border: #1e293b; --sub-text: #334155; --name-bg: #e2e8f0; --slot-bg: #cbd5e1;
-            --table-border: #000000;
+            --border: #1e293b; --name-bg: #e2e8f0; --slot-bg: #cbd5e1; --table-border: #000000;
         }
 
         body { 
@@ -33,55 +31,25 @@
         .nav-btn.active { background: var(--accent); color: #fff !important; }
         
         .paint-palette { background: var(--card); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 3px solid var(--border); width: 100%; }
-
-        /* TABELA OCUPANDO TODA A TELA */
-        .glass-card { 
-            background: var(--card); 
-            border-radius: 15px; 
-            border: 3px solid var(--border); 
-            padding: 20px; 
-            width: 100%; /* Ocupa 100% da largura disponível */
-            margin-bottom: 30px; 
-            position: relative;
-            overflow-x: auto; /* Scroll caso a tela seja muito pequena para 31 dias */
-        }
+        .glass-card { background: var(--card); border-radius: 15px; border: 3px solid var(--border); padding: 20px; width: 100%; margin-bottom: 30px; position: relative; overflow-x: auto; }
 
         .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .table-modern th { 
-            text-align: center; font-size: 0.75rem; color: var(--text); 
-            padding: 8px 2px; border-bottom: 3px solid var(--table-border); 
-            border-right: 1px solid var(--border);
-            min-width: 35px;
-        }
-
-        .td-name { 
-            background: var(--name-bg); color: var(--text); 
-            border: 2px solid var(--table-border) !important; 
-            padding: 10px; min-width: 200px; 
-            position: sticky; left: 0; z-index: 10;
-        }
+        .table-modern th { text-align: center; font-size: 0.75rem; color: var(--text); padding: 8px 2px; border-bottom: 3px solid var(--table-border); border-right: 1px solid var(--border); min-width: 38px; }
+        .td-name { background: var(--name-bg); color: var(--text); border: 2px solid var(--table-border) !important; padding: 10px; min-width: 200px; position: sticky; left: 0; z-index: 10; }
         
         .slot { 
-            width: 100%; min-width: 38px; height: 38px; 
+            width: 100%; min-width: 40px; height: 40px; 
             border-radius: 6px; background: var(--slot-bg); 
             display: flex; align-items: center; justify-content: center; 
-            font-size: 0.75rem; font-weight: 900; cursor: pointer; 
+            font-size: 0.75rem; font-weight: 900; cursor: crosshair; 
             border: 1px solid var(--table-border); 
         }
 
-        .btn-capture { background: #10b981; color: white; border: none; padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; }
-        .btn-capture:hover { background: #059669; transform: scale(1.05); }
-
-        /* FERRAMENTAS */
-        .tools-wrapper { display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; padding-top: 15px; border-top: 2px solid var(--border); }
-        .paint-tool { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; color: white !important; border: 1px solid rgba(0,0,0,0.2); }
-        .paint-tool.active { outline: 3px solid var(--text); transform: scale(1.1); z-index: 5; }
-
-        /* CORES */
+        /* Cores Mantidas Exatamente */
         .st-9H, .st-14H { background: #0044ff !important; color: white !important; }
         .st-8H, .st-13H { background: #00e676 !important; color: #000 !important; } 
         .st-11H { background: #00e5ff !important; color: #000 !important; }        
-        .st-0-5 { background: #ffffff !important; color: #000 !important; border: 1px solid #000 !important; }
+        .st-0-5 { background: #ffffff !important; color: #000 !important; border: 2px solid #000 !important; }
         .st-F { background: #ff1744 !important; color: white !important; }           
         .st-BH-1, .st-BH-05 { background: #d500f9 !important; color: white !important; } 
         .st-FF { background: #475569 !important; color: white !important; }
@@ -89,11 +57,15 @@
         .st-FE { background: #ffea00 !important; color: #000 !important; }            
         .st-FER { background: #166534 !important; color: white !important; }
 
-        /* Esconder botões na hora da foto */
+        .tools-wrapper { display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; padding-top: 15px; border-top: 2px solid var(--border); }
+        .paint-tool { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; color: white !important; border: 2px solid rgba(0,0,0,0.2); }
+        .paint-tool.active { outline: 4px solid var(--text); transform: scale(1.1); }
+
+        .btn-capture { background: #10b981; color: white; border: 2px solid #000; padding: 6px 15px; border-radius: 8px; font-weight: 900; }
         .capturing .btn-del-row, .capturing .btn-capture, .capturing .btn-add-row { display: none !important; }
     </style>
 </head>
-<body onmouseup="stopPainting()" onmouseleave="stopPainting()">
+<body>
 
     <div class="sidebar-nav">
         <button class="nav-btn active" onclick="setTab('autenticacao', this)">CP GERAL</button>
@@ -102,12 +74,12 @@
     </div>
 
     <div class="paint-palette">
-        <div class="d-flex flex-column align-items-center mb-3">
+        <div class="d-flex flex-column align-items-center">
             <div class="d-flex gap-2 align-items-center mb-3 flex-wrap justify-content-center">
-                <select id="sel-mes" class="form-select border-dark" style="width:140px" onchange="render()"></select>
-                <select id="sel-ano" class="form-select border-dark" style="width:100px" onchange="render()"></select>
-                <button class="btn btn-dark" onclick="toggleTheme()"><i class="fas fa-adjust"></i> TEMA</button>
-                <button class="btn btn-success fw-bold" onclick="save()"><i class="fas fa-save"></i> SALVAR TUDO</button>
+                <select id="sel-mes" class="form-select border-dark fw-bold" style="width:150px" onchange="render()"></select>
+                <select id="sel-ano" class="form-select border-dark fw-bold" style="width:110px" onchange="render()"></select>
+                <button class="btn btn-dark fw-bold" onclick="toggleTheme()"><i class="fas fa-adjust"></i> TEMA</button>
+                <button class="btn btn-success fw-bold" onclick="save()"><i class="fas fa-save"></i> SALVAR</button>
                 <button class="btn btn-primary fw-bold" onclick="changeBox(1)"><i class="fas fa-plus"></i> ADICIONAR MÊS</button>
             </div>
 
@@ -126,7 +98,7 @@
                 <div class="paint-tool st-FD" onclick="selectTool('FD', this)">FD</div>
                 <div class="paint-tool st-FE" onclick="selectTool('FE', this)">FE</div>
                 <div class="paint-tool bg-dark ms-2" onclick="selectTool('', this)"><i class="fas fa-eraser"></i></div>
-                <button class="btn btn-sm btn-outline-primary ms-3 fw-bold" onclick="modalNomes.show()">EDITAR EQUIPE</button>
+                <button class="btn btn-outline-primary ms-3 fw-bold border-2" onclick="modalNomes.show()">EQUIPE</button>
             </div>
         </div>
     </div>
@@ -135,7 +107,7 @@
 
     <div class="modal fade" id="modalNomes" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content glass-card"><div class="modal-body">
         <h5 class="fw-900">Equipe</h5>
-        <div class="input-group my-3"><input id="inNome" class="form-control border-dark" placeholder="Nome..."><button class="btn btn-primary" onclick="addN()">OK</button></div>
+        <div class="input-group my-3"><input id="inNome" class="form-control border-dark" placeholder="Nome..."><button class="btn btn-primary" onclick="addN()">ADD</button></div>
         <div id="listN" class="list-group"></div>
     </div></div></div></div>
 
@@ -146,18 +118,18 @@
             <select id="selS" class="form-select mb-3 border-dark"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option><option value="5">Semana 5</option></select>
         </div>
         <input type="hidden" id="targetMonth"><input type="hidden" id="targetYear">
-        <button class="btn btn-primary w-100 fw-900" onclick="confirmAdd()">CONFIRMAR</button>
+        <button class="btn btn-primary w-100 fw-900" onclick="confirmAdd()">ADICIONAR</button>
     </div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const API = { k: '$2a$10$Q2kXyLLkTCC5B3yZji9a3.DpwGfIxqoCxivdXlEX95CSREglkI/xG', b: '696fe1e1ae596e708fe97dbb' };
         let db = { escalas: {}, nomesLista: [], config: { boxCount: 1 } };
-        let curTab = 'autenticacao', selectedTool = null, isPainting = false;
+        let curTab = 'autenticacao', selectedTool = null;
 
+        const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
         const modalNomes = new bootstrap.Modal(document.getElementById('modalNomes'));
         const modalAdd = new bootstrap.Modal(document.getElementById('modalAdd'));
-        const meses = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
         
         const mesSel = document.getElementById('sel-mes');
         const anoSel = document.getElementById('sel-ano');
@@ -172,37 +144,19 @@
         }
 
         async function save() {
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${API.b}`, {
-                    method: 'PUT', headers: { "Content-Type": "application/json", "X-Master-Key": API.k },
-                    body: JSON.stringify(db)
-                });
-                alert("Salvo com sucesso!");
-            } catch (e) { alert("Erro ao salvar!"); }
+            try { await fetch(`https://api.jsonbin.io/v3/b/${API.b}`, { method: 'PUT', headers: { "Content-Type": "application/json", "X-Master-Key": API.k }, body: JSON.stringify(db) }); alert("Salvo!"); } catch (e) { alert("Erro!"); }
         }
 
         async function load() {
-            try {
-                const r = await fetch(`https://api.jsonbin.io/v3/b/${API.b}/latest`, { headers: { "X-Master-Key": API.k, "X-Bin-Meta": "false" }});
-                db = await r.json();
-                render();
-            } catch (e) { console.error("Erro load"); }
+            try { const r = await fetch(`https://api.jsonbin.io/v3/b/${API.b}/latest`, { headers: { "X-Master-Key": API.k, "X-Bin-Meta": "false" }}); db = await r.json(); render(); } catch (e) { console.error("Erro load"); }
         }
 
         function downloadPNG(id, name) {
             const el = document.getElementById(id);
             el.classList.add('capturing');
-            // Pequeno delay para garantir que classes de esconder botões foram aplicadas
             setTimeout(() => {
-                html2canvas(el, { 
-                    scale: 3, 
-                    useCORS: true,
-                    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card').trim()
-                }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `Escala_${name}.png`;
-                    link.href = canvas.toDataURL("image/png", 1.0);
-                    link.click();
+                html2canvas(el, { scale: 3, useCORS: true, backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--card').trim() }).then(canvas => {
+                    const link = document.createElement('a'); link.download = `Escala_${name}.png`; link.href = canvas.toDataURL("image/png", 1.0); link.click();
                     el.classList.remove('capturing');
                 });
             }, 100);
@@ -211,6 +165,7 @@
         function toggleTheme() {
             const html = document.documentElement;
             html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            render();
         }
 
         function render() {
@@ -226,9 +181,8 @@
                 const items = getEscala(cM, cA, curTab);
 
                 let head = `<th class="td-name">TÉCNICO</th>` + Array.from({length: dim}, (_, i) => i + 1).map(d => {
-                    let dayName = ['DOM','SEG','TER','QUA','QUI','SEX','SAB'][new Date(cA, cM, d).getDay()];
-                    let color = dayName === 'DOM' ? 'color:#ff4444' : '';
-                    return `<th style="${color}">${d}<br>${dayName}</th>`;
+                    let dName = ['DOM','SEG','TER','QUA','QUI','SEX','SAB'][new Date(cA, cM, d).getDay()];
+                    return `<th style="${dName==='DOM'?'color:#ff4444':''}">${d}<br>${dName}</th>`;
                 }).join('');
 
                 let rows = items.map((item, idx) => {
@@ -238,43 +192,48 @@
                         let isFF = val.toString().startsWith('FF:');
                         let disp = isFF ? val.split(':')[1] : val;
                         let cls = isFF ? 'FF' : val.toString().replace('.','-');
-                        r += `<td><div class="slot st-${cls||'vazio'}" onmousedown="handleMouseDown(event, ${cM}, ${cA}, ${idx}, ${d})" onmouseenter="moveP(event, ${cM}, ${cA}, ${idx}, ${d})">${disp}</div></td>`;
+                        r += `<td><div class="slot st-${cls||'vazio'}" onmousedown="handlePaint(event, ${cM}, ${cA}, ${idx}, ${d})" onmouseenter="handlePaint(event, ${cM}, ${cA}, ${idx}, ${d})">${disp}</div></td>`;
                     }
                     return `<tr>${r}</tr>`;
                 }).join('');
 
-                h += `
-                <div class="glass-card" id="${boxID}">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h4 class="m-0 fw-900 text-uppercase" style="color:var(--accent)">${meses[cM]} ${cA} - ${curTab}</h4>
-                        <div class="d-flex gap-2">
-                            <button class="btn btn-sm btn-dark btn-add-row" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-plus"></i> TÉCNICO</button>
-                            <button class="btn-capture" onclick="downloadPNG('${boxID}', '${meses[cM]}_${cA}')"><i class="fas fa-camera"></i> BAIXAR PNG</button>
-                        </div>
-                    </div>
-                    <table class="table-modern">
-                        <thead><tr>${head}</tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>`;
+                h += `<div class="glass-card" id="${boxID}"><div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="m-0 fw-900 text-uppercase" style="color:var(--accent)">${meses[cM]} ${cA} - ${curTab}</h4>
+                    <div class="d-flex gap-2"><button class="btn btn-sm btn-dark btn-add-row border-secondary" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-plus"></i> TÉCNICO</button>
+                    <button class="btn-capture" onclick="downloadPNG('${boxID}', '${meses[cM]}_${cA}')"><i class="fas fa-camera"></i> BAIXAR PNG</button></div></div>
+                    <table class="table-modern"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
             }
             area.innerHTML = h;
             document.getElementById('listN').innerHTML = (db.nomesLista || []).map((n, i) => `<div class="list-group-item d-flex justify-content-between"><span>${n}</span> <i class="fas fa-trash text-danger" onclick="delN(${i})"></i></div>`).join('');
             document.getElementById('selT').innerHTML = (db.nomesLista || []).map(n => `<option>${n}</option>`).join('');
         }
 
-        // ARRASTAR COM BOTÃO ESQUERDO
-        function handleMouseDown(e, m, a, idx, d) { if (e.button === 0) { isPainting = true; paint(m, a, idx, d); } }
-        function moveP(e, m, a, idx, d) { if (isPainting && selectedTool !== 'FF') paint(m, a, idx, d); }
-        function stopPainting() { isPainting = false; }
+        // LÓGICA DE CLIQUE E ARRASTE REFINADA
+        function selectTool(v, el) { selectedTool = v; document.querySelectorAll('.paint-tool').forEach(t => t.classList.remove('active')); if(el) el.classList.add('active'); }
 
-        function paint(m, a, idx, d) {
-            if(selectedTool === null) return;
+        function handlePaint(e, m, a, idx, d) {
+            // event.buttons === 1 garante que a pintura SÓ ocorra se o botão esquerdo estiver pressionado
+            if (e.buttons !== 1 || selectedTool === null) return;
+
             const items = getEscala(m, a, curTab);
-            if(!items[idx].dias) items[idx].dias = {};
-            let fVal = selectedTool;
-            if(selectedTool === 'FF'){ isPainting = false; let n = prompt("Feriado:"); fVal = n ? "FF:" + n : "FF"; }
-            items[idx].dias[d] = fVal; render();
+            if (!items[idx].dias) items[idx].dias = {};
+
+            let finalValue = selectedTool;
+
+            if (selectedTool === 'FF') {
+                if (e.type === 'mousedown') {
+                    let n = prompt("Feriado:");
+                    finalValue = n ? "FF:" + n : "FF";
+                } else { return; } // Não arrasta Feriado para evitar múltiplos prompts
+            }
+
+            items[idx].dias[d] = finalValue;
+            
+            // Atualização visual imediata
+            const cell = e.target;
+            const cls = finalValue.toString().startsWith('FF:') ? 'FF' : finalValue.toString().replace('.','-');
+            cell.className = `slot st-${cls || 'vazio'}`;
+            cell.innerText = finalValue.toString().includes(':') ? finalValue.split(':')[1] : finalValue;
         }
 
         function openAdd(m, a) { document.getElementById('targetMonth').value = m; document.getElementById('targetYear').value = a; modalAdd.show(); }
@@ -285,12 +244,11 @@
             render(); modalAdd.hide();
         }
 
-        function selectTool(v, el) { selectedTool = v; document.querySelectorAll('.paint-tool').forEach(t => t.classList.remove('active')); if(el) el.classList.add('active'); }
-        function setTab(t, b) { curTab = t; document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); render(); }
         function changeBox(v) { db.config.boxCount = Math.max(1, (db.config.boxCount||1) + v); render(); }
         function addN() { const i = document.getElementById('inNome'); if(i.value) { db.nomesLista.push(i.value); i.value=''; render(); } }
         function delN(i) { db.nomesLista.splice(i,1); render(); }
         function delE(m, a, idx) { db.escalas[getMonthKey(m,a)][curTab].splice(idx,1); render(); }
+        function setTab(t, b) { curTab = t; document.querySelectorAll('.nav-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); render(); }
 
         window.onload = load;
     </script>
