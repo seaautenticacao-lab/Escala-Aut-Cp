@@ -65,11 +65,11 @@
         .st-8H, .st-13H { background: #00c853 !important; color: #000 !important; } 
         .st-11H { background: #00e5ff !important; color: #000 !important; }        
         .st-0-5 { background: #ffffff !important; color: #000 !important; border: 2px solid #000 !important; }
-        .st-F { background: #ff1744 !important; color: white !important; }            
+        .st-F { background: #ff1744 !important; color: white !important; }             
         .st-BH-1, .st-BH-05 { background: #d500f9 !important; color: white !important; } 
         .st-FF { background: #455a64 !important; color: white !important; }
-        .st-FD { background: #ff6d00 !important; color: white !important; }            
-        .st-FE { background: #ffd600 !important; color: #000 !important; border: 1px solid #000; }            
+        .st-FD { background: #ff6d00 !important; color: white !important; }             
+        .st-FE { background: #ffd600 !important; color: #000 !important; border: 1px solid #000; }             
         .st-FER { background: #1b5e20 !important; color: white !important; }
         
         .glass-card { background: var(--card); border-radius: 25px; border: 3px solid var(--border); padding: 25px; width: fit-content; margin: 0 auto 30px auto; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
@@ -85,7 +85,7 @@
         .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; background: var(--card); padding: 6px 10px; border-radius: 8px; border: 2px solid var(--border); color: var(--text); }
         .legend-dot { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #000; }
 
-        .capturing .btn-del-row, .capturing .btn-sm, .capturing .btn-cap-single { display: none !important; }
+        .capturing .btn-del-row, .capturing .btn-sm, .capturing .btn-cap-single, .capturing .btn-danger { display: none !important; }
         .capturing .glass-card { border: 4px solid #000 !important; box-shadow: none !important; margin: 0 !important; }
     </style>
 </head>
@@ -207,6 +207,23 @@
             } catch (e) { document.getElementById('sync-label').innerText = "OFFLINE"; }
         }
 
+        function delBoxGeral(m, a) {
+            if(confirm(`Remover permanentemente a escala de ${meses[m]} de ${a}?`)) {
+                delete db.escalas[getMonthKey(m, a)];
+                render();
+            }
+        }
+
+        function delBoxSemana(m, a, tab, w) {
+            if(confirm(`Remover todos os técnicos da SEMANA ${w} de ${meses[m]}?`)) {
+                const key = getMonthKey(m, a);
+                if(db.escalas[key] && db.escalas[key][tab]) {
+                    db.escalas[key][tab] = db.escalas[key][tab].filter(item => item.semana != w);
+                    render();
+                }
+            }
+        }
+
         function render() {
             const area = document.getElementById('render-zone');
             const mB = parseInt(mesSel.value); const aB = parseInt(anoSel.value);
@@ -244,14 +261,19 @@
                     h += `<div class="glass-card" id="${boxID}"><div class="table-title">CP GERAL: ${meses[cM].toUpperCase()} ${cA}
                         <button class="btn btn-sm btn-dark ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
                         <button class="btn btn-sm btn-info ms-2 btn-cap-single" onclick="baixarBox('${boxID}')"><i class="fas fa-camera"></i></button>
+                        <button class="btn btn-sm btn-danger ms-2" onclick="delBoxGeral(${cM}, ${cA})"><i class="fas fa-trash-alt"></i></button>
                     </div><table class="table-modern"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table>${legendHTML}</div>`;
                 } else {
                     let weekH = "";
                     for(let s=1; s<=5; s++) {
                         let weekID = `week-${curTab}-${b}-${s}`;
-                        weekH += `<tr><td colspan="3" class="p-0"><div id="${weekID}" class="p-2"><div class="d-flex justify-content-center align-items-center gap-2 mb-2" style="color:white; background:var(--accent); border:1px solid #000; padding: 5px;">
-                            SEMANA ${s} <button class="btn btn-sm btn-light py-0 btn-cap-single" onclick="baixarBox('${weekID}')"><i class="fas fa-camera" style="font-size:0.7rem"></i></button>
-                            </div><table class="table-modern w-100"><tbody>${getRowsWeek(cM, cA, curTab, s)}</tbody></table></div></td></tr>`;
+                        weekH += `<tr><td colspan="3" class="p-0"><div id="${weekID}" class="p-2">
+                            <div class="d-flex justify-content-center align-items-center gap-2 mb-2" style="color:white; background:var(--accent); border:1px solid #000; padding: 5px;">
+                                SEMANA ${s} 
+                                <button class="btn btn-sm btn-light py-0 btn-cap-single" onclick="baixarBox('${weekID}')"><i class="fas fa-camera" style="font-size:0.7rem"></i></button>
+                                <button class="btn btn-sm btn-danger py-0" onclick="delBoxSemana(${cM}, ${cA}, '${curTab}', ${s})"><i class="fas fa-trash-alt" style="font-size:0.7rem"></i></button>
+                            </div>
+                            <table class="table-modern w-100"><tbody>${getRowsWeek(cM, cA, curTab, s)}</tbody></table></div></td></tr>`;
                     }
                     h += `<div class="glass-card" style="min-width:550px"><div class="table-title">${curTab.toUpperCase()}: ${meses[cM].toUpperCase()}
                         <button class="btn btn-sm btn-dark ms-2" onclick="openAdd(${cM}, ${cA})"><i class="fas fa-user-plus"></i></button>
@@ -268,8 +290,8 @@
             return items.filter(x => x.semana == w).map(item => {
                 const idx = items.indexOf(item); const val = item.dias?.[1] || '';
                 return `<tr><td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${m}, ${a}, ${idx})"></i>${item.nome}</td>
-                    <td style="border:1px solid var(--border)"><input type="text" class="bg-transparent border-0 text-center fw-900 w-100" style="color:var(--text)" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${idx}].dataManual=this.value"></td>
-                    <td style="border:1px solid var(--border)"><div class="slot st-${val.replace('.','-')||'vazio'} mx-auto" onmousedown="handleMouseDown(event, ${m}, ${a}, ${idx}, 1)">${val}</div></td></tr>`;
+                    <td style="border:1px solid var(--border)"><input type="text" class="bg-transparent border-0 text-center fw-900 w-100" style="color:var(--text)" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${items.indexOf(item)}].dataManual=this.value"></td>
+                    <td style="border:1px solid var(--border)"><div class="slot st-${val.replace('.','-')||'vazio'} mx-auto" onmousedown="handleMouseDown(event, ${m}, ${a}, ${items.indexOf(item)}, 1)">${val}</div></td></tr>`;
             }).join('');
         }
 
@@ -295,16 +317,14 @@
             document.body.classList.remove('capturing');
         }
 
-        // ALTERAÇÃO SOLICITADA: Validação estrita do botão esquerdo (buttons === 1)
         function handleMouseDown(e, m, a, idx, d) { 
-            if (e.buttons === 1) { // Verifica se apenas o botão esquerdo está pressionado
+            if (e.buttons === 1) { 
                 isPainting = true; 
                 paint(m, a, idx, d); 
             } 
         }
 
         function moveP(e, m, a, idx, d) { 
-            // Garante que a pintura só ocorra se o botão esquerdo continuar pressionado
             if (isPainting && e.buttons === 1 && selectedTool !== 'FF') {
                 paint(m, a, idx, d); 
             } else if (e.buttons !== 1) {
