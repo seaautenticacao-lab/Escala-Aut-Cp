@@ -61,8 +61,10 @@
         .paint-tool { min-width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.85rem; font-weight: 900; color: white !important; border: 2px solid rgba(0,0,0,0.2); }
         .paint-tool.active { outline: 4px solid #000; transform: scale(1.1); box-shadow: 0 0 10px rgba(0,0,0,0.3); }
 
+        /* Estilos de Cores dos Slots */
         .st-9H, .st-14H { background: #0044ff !important; color: white !important; }
         .st-8H, .st-13H { background: #00c853 !important; color: #000 !important; } 
+        .st-7-30H { background: #9dff9d !important; color: #000 !important; border: 1px solid #000; } /* Verde Claro Solicitado */
         .st-11H { background: #00e5ff !important; color: #000 !important; }        
         .st-0-5 { background: #ffffff !important; color: #000 !important; border: 2px solid #000 !important; }
         .st-F { background: #ff1744 !important; color: white !important; }             
@@ -124,6 +126,7 @@
             <div class="tools-wrapper">
                 <div class="paint-tool st-9H" onclick="selectTool('9H', this)">9H</div>
                 <div class="paint-tool st-8H" onclick="selectTool('8H', this)">8H</div>
+                <div class="paint-tool st-7-30H" onclick="selectTool('7:30H', this)">7:30H</div>
                 <div class="paint-tool st-11H" onclick="selectTool('11H', this)">11H</div>
                 <div class="paint-tool st-13H" onclick="selectTool('13H', this)">13H</div>
                 <div class="paint-tool st-14H" onclick="selectTool('14H', this)">14H</div>
@@ -174,10 +177,11 @@
         for(let a=2024; a<=2026; a++) anoSel.innerHTML += `<option value="${a}" ${a === new Date().getFullYear() ? 'selected' : ''}>${a}</option>`;
 
         const legendData = [
-            { c: 'st-9H', t: '9H' }, { c: 'st-8H', t: '8H' }, { c: 'st-11H', t: '11H' },
-            { c: 'st-13H', t: '13H' }, { c: 'st-14H', t: '14H' }, { c: 'st-0-5', t: '0,5' },
-            { c: 'st-F', t: 'F' }, { c: 'st-FER', t: 'FER' }, { c: 'st-BH-1', t: 'BH-1' },
-            { c: 'st-BH-05', t: 'BH-0.5' }, { c: 'st-FF', t: 'FF' }, { c: 'st-FD', t: 'FD' }, { c: 'st-FE', t: 'FE' }
+            { c: 'st-9H', t: '9H' }, { c: 'st-8H', t: '8H' }, { c: 'st-7-30H', t: '7:30H' },
+            { c: 'st-11H', t: '11H' }, { c: 'st-13H', t: '13H' }, { c: 'st-14H', t: '14H' }, 
+            { c: 'st-0-5', t: '0,5' }, { c: 'st-F', t: 'F' }, { c: 'st-FER', t: 'FER' }, 
+            { c: 'st-BH-1', t: 'BH-1' }, { c: 'st-BH-05', t: 'BH-0.5' }, { c: 'st-FF', t: 'FF' }, 
+            { c: 'st-FD', t: 'FD' }, { c: 'st-FE', t: 'FE' }
         ];
 
         function getMonthKey(m, a) { return `${m}-${a}`; }
@@ -253,7 +257,8 @@
                         let r = `<td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${cM}, ${cA}, ${idx})"></i>${item.nome}</td>`;
                         visibleDays.forEach(d => {
                             let val = item.dias?.[d] || ''; let isFF = val.toString().startsWith('FF:');
-                            let disp = isFF ? val.split(':')[1] : val; let cls = isFF ? 'FF' : val.toString().replace('.','-');
+                            let disp = isFF ? val.split(':')[1] : val; 
+                            let cls = isFF ? 'FF' : val.toString().replace('.','-').replace(':','-');
                             r += `<td><div class="slot st-${cls||'vazio'}" onmousedown="handleMouseDown(event, ${cM}, ${cA}, ${idx}, ${d})" onmouseenter="moveP(event, ${cM}, ${cA}, ${idx}, ${d})">${disp}</div></td>`;
                         });
                         return `<tr>${r}</tr>`;
@@ -289,9 +294,10 @@
             const items = getEscala(m, a, tab);
             return items.filter(x => x.semana == w).map(item => {
                 const idx = items.indexOf(item); const val = item.dias?.[1] || '';
+                let cls = val.toString().replace('.','-').replace(':','-');
                 return `<tr><td class="td-name"><i class="fas fa-trash btn-del-row" onclick="delE(${m}, ${a}, ${idx})"></i>${item.nome}</td>
                     <td style="border:1px solid var(--border)"><input type="text" class="bg-transparent border-0 text-center fw-900 w-100" style="color:var(--text)" value="${item.dataManual||''}" onchange="db.escalas['${getMonthKey(m,a)}']['${tab}'][${items.indexOf(item)}].dataManual=this.value"></td>
-                    <td style="border:1px solid var(--border)"><div class="slot st-${val.replace('.','-')||'vazio'} mx-auto" onmousedown="handleMouseDown(event, ${m}, ${a}, ${items.indexOf(item)}, 1)">${val}</div></td></tr>`;
+                    <td style="border:1px solid var(--border)"><div class="slot st-${cls||'vazio'} mx-auto" onmousedown="handleMouseDown(event, ${m}, ${a}, ${items.indexOf(item)}, 1)">${val}</div></td></tr>`;
             }).join('');
         }
 
